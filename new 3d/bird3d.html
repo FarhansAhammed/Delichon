@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Flying House Martin - GLB Model</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #ffffff; /* Pure white background to match image */
+            font-family: sans-serif;
+        }
+        #info {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #333;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Loading bird.glb...</div>
+    <div id="info">3D House Martin Simulation (Drag to rotate)</div>
+    
+    <!-- Import Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Import GLTFLoader -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        // --- Scene Setup ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff); // Pure white background
+
+        // Camera positioned perfectly for the side view
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 12); 
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.35; // Fine-tuned exposure for premium brightness
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.target.set(0, 0, 0);
+
+        // --- Premium Studio Lighting Setup (Bright & Beautiful) ---
+        // 1. Hemisphere Light for a soft, natural sky/ground ambient illumination (no harsh shadows)
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0xe0e8ff, 1.2);
+        scene.add(hemiLight);
+
+        // 2. Key Light (Front-Right-Top) to highlight the bird's face and side details beautifully
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
+        keyLight.position.set(5, 8, 8);
+        scene.add(keyLight);
+
+        // 3. Fill Light (Front-Left-Bottom) to soften any crevices or under-body dark spots
+        const fillLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        fillLight.position.set(-5, 2, 5);
+        scene.add(fillLight);
+
+        // 4. Back/Rim Light (Behind) to create beautiful highlight glows along the wings and feathers
+        const backLight = new THREE.DirectionalLight(0xffffff, 1.4);
+        backLight.position.set(0, 5, -10);
+        scene.add(backLight);
+
+        // 5. Under Light (Bottom-Up) to ensure the belly and underside of the wings are bright and vibrant
+        const underLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        underLight.position.set(0, -10, 0);
+        scene.add(underLight);
+
+        // --- Load GLB Model and Prepare Procedural Animation ---
+        let mixer;
+        let birdModel;
+        const loader = new THREE.GLTFLoader();
+
+        loader.load(
+            'bird.glb', // Path to the GLB file in the root folder
+            function (gltf) {
+                // Hide loading text
+                document.getElementById('loading').style.display = 'none';
+
+                birdModel = gltf.scene;
+
+                // Traverse the model to configure lighting/materials AND apply vertex shader for flapping
+                birdModel.traverse(function (child) {
+                    if (child.isMesh) {
+                        child.castShadow = false;
+                        child.receiveShadow = false;
+                        
+                        // Inject vertex shader to procedurally bend the wings AND head/tail
+                        if (child.material) {
+                            child.material = child.material.clone();
+                            child.material.onBeforeCompile = function (shader) {
+                                shader.uniforms.uTime = { value: 0 };
+                                
+                                shader.vertexShader = 'uniform float uTime;\n' + shader.vertexShader;
+
+                                shader.vertexShader = shader.vertexShader.replace(
+                                    '#include <begin_vertex>',
+                                    `
+                                    #include <begin_vertex>
+                                    
+                                    // 1. WINGS (X-axis flapping)
+                                    float wingDist = abs(transformed.x);
+                                    
+                                    // Deadzone for the body. The further out on the X axis, the more it bends.
+                                    float flapAmount = pow(max(wingDist - 0.15, 0.0), 1.2) * 1.4; 
+                                    
+                                    // Apply wing flap motion to Y (up and down)
+                                    transformed.y += sin(uTime * 15.0) * flapAmount;
+                                    
+                                    // Slight aerodynamic twist to Z (forward/back) to simulate catching air
+                                    transformed.z -= cos(uTime * 15.0) * flapAmount * 0.15;
+                                    
+                                    // 2. HEAD & TAIL (Z-axis natural flexing)
+                                    float bodyZ = transformed.z;
+                                    
+                                    // Deadzone near the torso, applying gentle flex mainly to extremities
+                                    float bodyFlex = pow(max(abs(bodyZ) - 0.1, 0.0), 1.2) * 0.08; 
+                                    
+                                    // Natural counter-balance bobbing to the wings
+                                    // Phase delay (abs(bodyZ) * 1.5) creates a slight organic ripple effect
+                                    transformed.y -= sin(uTime * 15.0 - abs(bodyZ) * 1.5) * bodyFlex; 
+                                    
+                                    // Very subtle look/swish left and right for realism
+                                    transformed.x += sin(uTime * 4.0 + bodyZ * 2.0) * bodyFlex * 0.15;
+                                    `
+                                );
+                                child.userData.shaderUniforms = shader.uniforms;
+                            };
+                        }
+                    }
+                });
+
+                // Add the model to the scene
+                scene.add(birdModel);
+
+                // If the model HAS baked animations, we play them too
+                if (gltf.animations && gltf.animations.length > 0) {
+                    mixer = new THREE.AnimationMixer(birdModel);
+                    const action = mixer.clipAction(gltf.animations[0]);
+                    action.play();
+                }
+            },
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            function (error) {
+                console.error('An error happened loading the bird.glb file:', error);
+                document.getElementById('loading').innerText = 'Error loading bird.glb. Check console.';
+            }
+        );
+
+
+        // --- Window Resize Handler ---
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- Animation Loop ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta(); // Time elapsed since last frame
+            const time = clock.elapsedTime; // Total time elapsed
+
+            // Update the baked skeletal animation from the GLB (if it exists)
+            if (mixer) {
+                mixer.update(delta);
+            }
+
+            // Apply global environmental physics and update shader uniforms
+            if (birdModel) {
+                const flapSpeed = 15;
+                
+                // Update shader time for the procedural bending
+                birdModel.traverse(function (child) {
+                    if (child.isMesh && child.userData.shaderUniforms) {
+                        child.userData.shaderUniforms.uTime.value = time;
+                    }
+                });
+                
+                // Bob up and down on the Y axis to simulate air physics (greatly reduced for a steadier flight)
+                birdModel.position.y = Math.cos(time * flapSpeed) * 0.01 + Math.sin(time * 2.0) * 0.03;
+                
+                // Pitch slightly with the flap (greatly reduced rocking amplitude for stability)
+                birdModel.rotation.z = 0.15 + Math.sin(time * flapSpeed) * 0.005;
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

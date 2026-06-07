@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mazda Car Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            /* Even darker body background */
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Diagonal Split Background matching the image exactly */
+        .split-bg-left {
+            background-color: #1a1a1a;
+            position: absolute;
+            inset: 0;
+            clip-path: polygon(0 0, 58% 0, 38% 100%, 0 100%);
+            /* Adjusted angle */
+            z-index: 1;
+        }
+
+        .split-bg-right {
+            background-color: #111111;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        /* Top Bar specific styling */
+        .top-bar-curve {
+            position: absolute;
+            top: 0;
+            left: 58%;
+            width: 100%;
+            height: 80px;
+            background-color: #1a1a1a;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 8% 100%);
+            z-index: 2;
+            transform: translateX(-40px);
+
+            /* Adjust to align with split */
+            /* Slanted Thumbnails */
+            .car-thumb {
+                position: relative;
+                transform: skewX(-12deg);
+                background-color: #1a1a1a;
+                border-radius: 16px;
+                cursor: pointer;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                width: 130px;
+                height: 100px;
+                margin-top: 25px;
+                /* Push down inactive thumbs */
+                flex-shrink: 0;
+                overflow: visible;
+            }
+
+            .car-thumb:hover {
+                background-color: #222;
+            }
+
+            /* Active/Popped state */
+            .car-thumb.active-thumb {
+                width: 190px;
+                height: 150px;
+                background-color: #2a2a2a;
+                /* Lighter grey for active */
+                margin-top: -25px;
+                /* Pull up to create the pop effect */
+                z-index: 10;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            }
+
+            /* Un-skew content inside */
+            .thumb-content {
+                transform: skewX(12deg);
+                position: absolute;
+                inset: 0;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                width: 100%;
+                height: 100%;
+            }
+
+            /* Thumbnail Image positioning */
+            .thumb-car-img {
+                position: absolute;
+                bottom: 45px;
+                left: -10px;
+                width: 120%;
+                max-width: none;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
+                pointer-events: none;
+            }
+
+            .active-thumb .thumb-car-img {
+                bottom: 60px;
+                left: -5px;
+                width: 110%;
+                filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.6));
+            }
+
+            /* Cards container to handle alignment */
+            .cards-container {
+                display: flex;
+                gap: 1.5rem;
+                align-items: center;
+                height: 180px;
+                /* Fixed height to accommodate scaling */
+                padding-left: 10px;
+                overflow: visible;
+            }
+
+            /* Main Car Animation */
+            #main-car-container {
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .car-hidden {
+                opacity: 0;
+                transform: translateY(-40%) scale(0.9) translateX(-40px);
+            }
+
+            .car-visible {
+                opacity: 1;
+                transform: translateY(-50%) scale(1) translateX(0);
+            }
+
+            .car-shadow {
+                filter: drop-shadow(0 40px 30px rgba(0, 0, 0, 0.7));
+            }
+
+            /* Custom Toggle Switch */
+            .drive-toggle {
+                background-color: #1a1a1a;
+                border-radius: 999px;
+                padding: 2px;
+                display: inline-flex;
+                border: 1px solid #333;
+            }
+
+            .toggle-btn {
+                padding: 4px 12px;
+                font-size: 10px;
+                font-weight: 700;
+                border-radius: 999px;
+                transition: all 0.2s;
+                color: #888;
+            }
+
+            .toggle-btn.active {
+                background-color: #444;
+                color: white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+    </style>
+</head>
+
+<body class="p-2 sm:p-6 flex items-center justify-center">
+
+    <!-- Main App Container -->
+    <div
+        class="relative w-[1100px] h-[650px] rounded-[2rem] overflow-hidden text-white shadow-[0_20px_50px_rgba(0,0,0,0.8)] bg-[#111] border border-[#222]">
+
+        <!-- Backgrounds -->
+        <div class="split-bg-right"></div>
+        <div class="split-bg-left"></div>
+        <div class="top-bar-curve"></div> <!-- Subtle curve at top right -->
+
+        <!-- ================= TOP NAVIGATION ================= -->
+        <div class="absolute top-6 left-8 flex items-center gap-2 z-30">
+            <!-- Mazda Logo -->
+            <svg viewBox="0 0 100 100" class="w-6 h-6 fill-none stroke-white stroke-[3px]">
+                <ellipse cx="50" cy="50" rx="45" ry="35" />
+                <path d="M 15 50 Q 50 80 85 50 M 15 50 Q 30 20 50 50 Q 70 20 85 50" />
+            </svg>
+            <span class="font-bold tracking-[0.2em] text-sm uppercase">mazda</span>
+        </div>
+
+        <div
+            class="absolute top-6 right-8 flex items-center gap-8 z-30 w-full justify-between px-[5%] left-[58%] max-w-[40%]">
+            <a href="#"
+                class="text-[11px] text-gray-400 font-medium hover:text-white transition-colors flex items-center gap-1">
+                <i class="ph ph-caret-left text-[10px]"></i> До моделей
+            </a>
+            <div class="flex items-center gap-6 text-gray-400">
+                <i class="ph ph-user-circle text-xl hover:text-white cursor-pointer transition-colors"></i>
+                <i class="ph ph-list text-xl hover:text-white cursor-pointer transition-colors"></i>
+            </div>
+        </div>
+
+        <!-- ================= LEFT SECTION (MAIN) ================= -->
+        <!-- Title -->
+        <div class="absolute top-24 left-[10%] z-30">
+            <h1 class="text-[28px] font-bold tracking-wider uppercase">MAZDA 3 SEDAN</h1>
+        </div>
+
+        <!-- Vertical Menu Icons -->
+        <div class="absolute left-8 top-[45%] transform -translate-y-1/2 flex flex-col gap-8 items-start z-30">
+            <!-- Active Step -->
+            <div class="flex items-center gap-3">
+                <div class="w-4 h-4 rounded-full border border-white flex items-center justify-center">
+                    <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+                <span class="text-[9px] font-bold text-white tracking-widest uppercase">Комплектації</span>
+            </div>
+            <!-- Inactive Steps -->
+            <div class="flex flex-col gap-6 ml-0.5 mt-2">
+                <i class="ph ph-engine text-lg text-gray-500 hover:text-white transition-colors cursor-pointer"></i>
+                <i
+                    class="ph ph-steering-wheel text-lg text-gray-500 hover:text-white transition-colors cursor-pointer"></i>
+                <i
+                    class="ph ph-plus-circle text-lg text-gray-500 hover:text-white transition-colors cursor-pointer"></i>
+                <i
+                    class="ph ph-currency-dollar text-lg text-gray-500 hover:text-white transition-colors cursor-pointer"></i>
+            </div>
+        </div>
+
+        <!-- Main Car Image Container -->
+        <div class="absolute z-20 w-[65%] top-1/2 left-[8%] transform -translate-y-1/2 pointer-events-none car-visible"
+            id="main-car-container">
+            <img id="main-car-img"
+                src="https://placehold.co/1200x600/transparent/ff2a2a.png?text=RED+MAZDA+3&font=montserrat"
+                alt="Mazda 3 Sedan" class="w-full h-auto object-contain car-shadow" />
+        </div>
+
+        <!-- Bottom Left Specs -->
+        <div class="absolute bottom-8 left-[10%] flex gap-10 z-30">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                    <i class="ph ph-gauge text-white text-xl"></i>
+                    <span class="text-lg font-bold">7.4 с</span>
+                </div>
+                <span class="text-[9px] text-gray-500 font-medium">від 0 до 100 км/г</span>
+            </div>
+
+            <div class="flex flex-col gap-1 justify-end">
+                <div class="text-lg font-bold">209 км/г</div>
+                <span class="text-[9px] text-gray-500 font-medium">макс. швидкість</span>
+            </div>
+
+            <div class="flex flex-col gap-1 justify-end">
+                <div class="text-lg font-bold">7.2 л/г</div>
+                <span class="text-[9px] text-gray-500 font-medium">витрата палива</span>
+            </div>
+        </div>
+
+        <!-- ================= RIGHT SECTION (CONFIG) ================= -->
+        <div class="absolute right-[5%] top-[25%] w-[38%] z-30 flex flex-col gap-8">
+
+            <!-- Drive Toggle -->
+            <div class="flex justify-end w-full">
+                <div class="flex items-center gap-4">
+                    <span class="text-[11px] text-gray-300 font-medium font-bold">Тип приводу</span>
+                    <div class="flex items-center bg-[#1e1e1e] rounded-full p-[3px] border border-[#333]">
+                        <button
+                            class="px-3 py-1 bg-[#4a4a4a] rounded-full text-[10px] font-bold text-white shadow-sm transition-all">4wd</button>
+                        <button
+                            class="px-3 py-1 bg-transparent rounded-full text-[10px] font-bold text-gray-500 hover:text-white transition-all">2wd</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configurations Header & Cards -->
+            <div class="flex flex-col gap-5">
+                <h3 class="text-xs font-bold tracking-widest text-white">Комплектації</h3>
+
+                <div class="cards-container">
+                    <!-- Thumb 1: Style (Selected Default) -->
+                    <div class="car-thumb active-thumb" id="thumb-style" onclick="selectCar('style')">
+                        <div class="thumb-content">
+                            <img src="https://placehold.co/400x200/transparent/ff2a2a.png?text=RED&font=montserrat"
+                                class="thumb-car-img" />
+                            <div class="flex justify-between items-end relative z-10 w-full">
+                                <span class="text-[12px] font-bold text-white">Style</span>
+                                <i class="ph ph-plus-circle text-gray-300 text-base"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thumb 2: Exclusive -->
+                    <div class="car-thumb" id="thumb-exclusive" onclick="selectCar('exclusive')">
+                        <div class="thumb-content">
+                            <img src="https://placehold.co/400x200/transparent/dddddd.png?text=WHITE&font=montserrat"
+                                class="thumb-car-img" />
+                            <div class="flex justify-between items-end relative z-10 w-full">
+                                <span class="text-[12px] font-bold text-gray-400">Exclusive</span>
+                                <i class="ph ph-plus-circle text-gray-500 text-base"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thumb 3: Premium -->
+                    <div class="car-thumb" id="thumb-premium" onclick="selectCar('premium')">
+                        <div class="thumb-content">
+                            <img src="https://placehold.co/400x200/transparent/555555.png?text=GREY&font=montserrat"
+                                class="thumb-car-img" />
+                            <div class="flex justify-between items-end relative z-10 w-full">
+                                <span class="text-[12px] font-bold text-gray-400">Premium</span>
+                                <i class="ph ph-plus-circle text-gray-500 text-base"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BOTTOM RIGHT (CHECKOUT) ================= -->
+        <div class="absolute bottom-8 right-[5%] w-[38%] z-30 flex justify-between items-end">
+            <div class="flex items-baseline gap-4">
+                <div class="flex items-center gap-1 cursor-pointer text-gray-400 hover:text-white transition-colors">
+                    <span class="text-[10px] font-medium">Готівка</span>
+                    <i class="ph ph-caret-down text-[10px]"></i>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-xl font-bold text-white" id="price-val">590 300</span>
+                    <span class="text-xs text-white font-bold">₴</span>
+                </div>
+                <a href="#"
+                    class="text-[9px] text-gray-500 hover:text-gray-300 ml-2 transition-colors border-b border-gray-600 pb-0.5">Налаштувати
+                    платіж</a>
+            </div>
+
+            <button
+                class="px-6 py-2 rounded-full border border-white text-[10px] font-bold hover:bg-white hover:text-black transition-colors duration-300 tracking-wide bg-transparent">
+                Продовжити
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // Data structure for the different configurations
+        const cars = {
+            style: {
+                price: '590 300',
+                img: 'https://placehold.co/1000x500/transparent/ff2a2a.png?text=RED+MAZDA+3&font=montserrat'
+            },
+            exclusive: {
+                price: '685 500',
+                img: 'https://placehold.co/1000x500/transparent/dddddd.png?text=WHITE+MAZDA+3&font=montserrat'
+            },
+            premium: {
+                price: '750 000',
+                img: 'https://placehold.co/1000x500/transparent/555555.png?text=GREY+MAZDA+3&font=montserrat'
+            }
+        };
+
+        function selectCar(id) {
+            const selectedThumb = document.getElementById('thumb-' + id);
+            const mainCarContainer = document.getElementById('main-car-container');
+            const mainCarImg = document.getElementById('main-car-img');
+            const priceText = document.getElementById('price-val');
+
+            if (selectedThumb.classList.contains('active-thumb')) return;
+
+            // 1. Reset all thumbnails: remove active class, reset text colors
+            document.querySelectorAll('.car-thumb').forEach(el => {
+                el.classList.remove('active-thumb');
+                const textSpan = el.querySelector('span');
+                const icon = el.querySelector('i');
+                textSpan.classList.replace('text-white', 'text-gray-400');
+                icon.classList.replace('text-gray-300', 'text-gray-500');
+            });
+
+            // 2. Activate the clicked thumbnail
+            selectedThumb.classList.add('active-thumb');
+            const activeText = selectedThumb.querySelector('span');
+            const activeIcon = selectedThumb.querySelector('i');
+            activeText.classList.replace('text-gray-400', 'text-white');
+            activeIcon.classList.replace('text-gray-500', 'text-gray-300');
+
+            // 3. Animate Main Car Image Out
+            mainCarContainer.classList.remove('car-visible');
+            mainCarContainer.classList.add('car-hidden');
+
+            // 4. Wait for exit animation, swap content, then animate in
+            setTimeout(() => {
+                mainCarImg.src = cars[id].img;
+                priceText.innerText = cars[id].price;
+
+                // Slight delay to ensure image begins rendering before animating back
+                requestAnimationFrame(() => {
+                    mainCarContainer.classList.remove('car-hidden');
+                    mainCarContainer.classList.add('car-visible');
+                });
+            }, 400); // 400ms matches the CSS transition duration
+        }
+    </script>
+</body>
+
+</html>

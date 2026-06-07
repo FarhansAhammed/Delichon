@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Gallery Pitch Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dynamic variable allowing JS to speed up animations during rapid scroll */
+            --card-transition-duration: 1.2s;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #EAEAEA;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .card-transition {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: transform var(--card-transition-duration) cubic-bezier(0.7, 0, 0.2, 1),
+                opacity var(--card-transition-duration) cubic-bezier(0.7, 0, 0.2, 1),
+                box-shadow var(--card-transition-duration) cubic-bezier(0.7, 0, 0.2, 1),
+                translate 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, opacity, box-shadow, translate;
+            translate: 0px 0px;
+            cursor: pointer;
+        }
+
+        /* Prevent hover glitch by expanding the interactive hit area when the card moves */
+        .card-transition::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .card-transition:hover::after {
+            /* Since the card moves right (25%) and up (-5%), we stretch the invisible 
+               hit area left and down to keep the mouse continuously "on" the card. */
+            left: -30%;
+            bottom: -10%;
+        }
+
+        .card-transition:hover {
+            translate: 25% -5%;
+            z-index: 200 !important;
+            box-shadow: -30px -50px 80px -10px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .card-snap {
+            transition: none !important;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen w-full flex items-center justify-center text-white relative overflow-hidden">
+
+    <!-- Main Gallery Container -->
+    <div id="gallery-container" class="relative w-full h-full flex items-center justify-center z-10">
+        <!-- Cards will be injected here by JavaScript -->
+    </div>
+
+    <!-- Progress indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-50">
+        <div class="w-24 h-1.5 bg-black/10 rounded-full overflow-hidden relative">
+            <div id="progress-bar" class="absolute top-0 left-0 h-full bg-red-600 w-0"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- Data for the Gallery Cards ---
+        const galleryData = [
+            {
+                id: 'card-1',
+                theme: 'red',
+                content: `
+                    <div class="flex flex-col h-full justify-between p-5 border border-white/20 rounded-2xl">
+                        <div class="flex justify-between items-start border-b border-black/20 pb-2">
+                            <span class="text-[9px] font-bold tracking-widest text-black/60">2.4 PROCESS</span>
+                            <span class="text-3xl font-black text-black/10 leading-none absolute top-3 right-5">4</span>
+                        </div>
+                        <div class="mt-2 flex-grow flex flex-col justify-center">
+                            <h1 class="text-2xl md:text-3xl font-black leading-[0.85] tracking-tighter text-white uppercase break-words">
+                                Discover<br>Direction<br>Design<br><span class="text-black">Delivery</span>
+                            </h1>
+                        </div>
+                        <div class="flex gap-3 mt-4">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=400&h=200" class="w-1/2 h-16 object-cover rounded-md filter grayscale opacity-80 mix-blend-multiply" alt="Architecture">
+                            <div class="w-1/2 text-[9px] font-medium text-black/70 flex flex-col justify-end">
+                                <p>Initiating the primary sequence of creative development algorithms.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'card-2',
+                theme: 'light',
+                content: `
+                    <div class="flex flex-col h-full justify-between p-5 text-black border border-black/5 rounded-2xl">
+                        <div class="flex justify-between items-start border-b border-black/10 pb-2">
+                            <span class="text-[9px] font-bold tracking-widest text-black/40">2.2 OPPORTUNITY</span>
+                            <div class="w-4 h-4 rounded-full border border-black/20 flex items-center justify-center">
+                                <div class="w-1 h-1 bg-black rounded-full"></div>
+                            </div>
+                        </div>
+                        <div class="flex-grow flex items-center justify-between mt-4 gap-4">
+                            <div class="w-1/2 space-y-4">
+                                <div class="border-t border-black pt-1">
+                                    <h2 class="text-lg font-black uppercase tracking-tight">Gap</h2>
+                                    <p class="text-[9px] text-black/60 mt-1">Identifying white space in the market.</p>
+                                </div>
+                                <div class="border-t border-black/20 pt-1 text-black/40">
+                                    <h2 class="text-lg font-black uppercase tracking-tight">Shift</h2>
+                                </div>
+                            </div>
+                            <div class="w-1/2 h-full flex justify-end">
+                                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=400&h=600" class="h-full w-4/5 object-cover rounded-lg shadow-md" alt="Minimalist Object">
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'card-3',
+                theme: 'dark',
+                content: `
+                    <div class="flex flex-col h-full p-5 text-white border border-white/10 rounded-2xl">
+                        <div class="flex justify-between items-start border-b border-white/20 pb-2">
+                            <span class="text-[9px] font-bold tracking-widest">4.1 METRICS</span>
+                            <div class="flex gap-3 text-xs font-bold">
+                                <span>2.1M</span>
+                                <span>56K</span>
+                                <span class="text-red-500">12</span>
+                            </div>
+                        </div>
+                        <div class="flex-grow flex mt-4 gap-4">
+                            <div class="w-5/12 relative rounded-lg overflow-hidden group">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=500&h=600" class="w-full h-full object-cover filter grayscale" alt="Portrait">
+                                <div class="absolute top-[40%] left-0 w-full h-6 bg-red-600/90 transform -rotate-3 backdrop-blur-sm mix-blend-color-dodge"></div>
+                            </div>
+                            <div class="w-7/12 flex flex-col justify-center gap-2">
+                                <div>
+                                    <div class="flex justify-between text-[8px] mb-1 text-white/50"><span>REACH</span><span>72K</span></div>
+                                    <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                        <div class="w-[72%] h-full bg-white"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-[8px] mb-1 text-white/50"><span>ENGAGEMENT</span><span>3M</span></div>
+                                    <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden flex gap-0.5">
+                                        <div class="w-[30%] h-full bg-red-600"></div>
+                                        <div class="w-[15%] h-full bg-red-600/50"></div>
+                                        <div class="w-[10%] h-full bg-white/30"></div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 grid grid-cols-2 gap-x-2 gap-y-1 text-[8px] font-bold">
+                                    <div class="flex justify-between border-b border-white/20 pb-0.5"><span>NY</span><span class="text-red-500">53%</span></div>
+                                    <div class="flex justify-between border-b border-white/20 pb-0.5"><span>LA</span><span>22%</span></div>
+                                    <div class="flex justify-between border-b border-white/20 pb-0.5"><span>MIA</span><span>11%</span></div>
+                                    <div class="flex justify-between border-b border-white/20 pb-0.5"><span>LON</span><span>7%</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'card-4',
+                theme: 'red',
+                content: `
+                    <div class="flex flex-col h-full items-center justify-center p-5 text-center border border-white/20 rounded-2xl">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600&h=400" class="w-full h-24 object-cover rounded-lg mb-4 mix-blend-luminosity opacity-80" alt="Abstract">
+                        <h2 class="text-3xl font-black uppercase tracking-tighter text-white">Platform</h2>
+                        <p class="mt-2 text-black font-bold text-[10px] max-w-[200px]">The unified ecosystem for creative deployment and scaling.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'card-5',
+                theme: 'light',
+                content: `
+                    <div class="flex flex-col h-full p-5 text-black border border-black/5 rounded-2xl">
+                        <h3 class="text-xl font-black uppercase mb-4">Introduction</h3>
+                        <div class="flex gap-4 h-full">
+                            <div class="w-1/2 text-[10px] leading-relaxed font-medium text-black/70">
+                                <p>We are entering a new paradigm of visual communication.</p>
+                                <p class="mt-2">Velocity and precision are the standard.</p>
+                            </div>
+                            <div class="w-1/2 grid grid-cols-2 gap-2">
+                                <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=300&h=300" class="w-full h-full object-cover rounded-md" alt="Abstract shape">
+                                <img src="https://images.unsplash.com/photo-1550684376-efcbd6e3f031?auto=format&fit=crop&q=80&w=300&h=300" class="w-full h-full object-cover rounded-md" alt="Abstract shape 2">
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'card-6',
+                theme: 'dark',
+                content: `
+                    <div class="flex flex-col h-full p-5 text-white border border-white/10 rounded-2xl">
+                        <div class="flex justify-between items-start border-b border-white/20 pb-2">
+                            <span class="text-[9px] font-bold tracking-widest">5.0 THE TEAM</span>
+                            <span class="text-3xl font-black text-white/10 leading-none absolute top-3 right-5">5</span>
+                        </div>
+                        <div class="flex-grow flex items-center justify-between mt-4 gap-4">
+                            <div class="w-full grid grid-cols-3 gap-2">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200&h=200" class="w-full aspect-square object-cover rounded filter grayscale" alt="Team 1">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200&h=200" class="w-full aspect-square object-cover rounded filter grayscale" alt="Team 2">
+                                <div class="w-full aspect-square bg-red-600 rounded flex items-center justify-center text-xs font-bold">+12</div>
+                            </div>
+                        </div>
+                        <p class="text-[9px] text-white/50 mt-4 text-center">Global talent distributed across 4 continents.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'card-7',
+                theme: 'red',
+                content: `
+                    <div class="flex flex-col h-full items-center justify-center p-5 text-center border border-white/20 rounded-2xl">
+                        <h2 class="text-4xl font-black uppercase tracking-tighter text-white mb-2">Roadmap</h2>
+                        <div class="w-full flex justify-between text-[8px] font-bold mt-4 px-4 relative">
+                            <div class="absolute top-1/2 left-4 right-4 h-px bg-white/30 -translate-y-1/2 z-0"></div>
+                            <div class="z-10 bg-[#E53935] px-2 text-black">Q1</div>
+                            <div class="z-10 bg-[#E53935] px-2 text-white">Q2</div>
+                            <div class="z-10 bg-[#E53935] px-2 text-white/50">Q3</div>
+                            <div class="z-10 bg-[#E53935] px-2 text-white/30">Q4</div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'card-8',
+                theme: 'dark',
+                content: `
+                     <div class="flex flex-col h-full items-center justify-center p-5 text-center bg-black border-[6px] border-[#1a1a1a] rounded-2xl">
+                        <h2 class="text-4xl font-black uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20">The End</h2>
+                        <div class="w-10 h-0.5 bg-red-600 mt-4 mb-4"></div>
+                        <p class="text-white/50 tracking-[0.2em] uppercase text-[9px]">Restarting Sequence</p>
+                    </div>
+                `
+            }
+        ];
+
+        const container = document.getElementById('gallery-container');
+        const progressBar = document.getElementById('progress-bar');
+        const CYCLE_TIME = 3000;
+
+        let cards = [];
+        let animationInterval;
+        let transitionTime = 1200; // Controlled dynamically during scrolling
+
+        const TOTAL_CARDS = galleryData.length;
+        const stackStates = [];
+
+        const focalIndex = 3;
+
+        for (let i = 0; i < TOTAL_CARDS; i++) {
+            const yOffset = -80 + (i * 24);
+            const xOffset = -5 - Math.pow(i - focalIndex, 2) * 0.8;
+            const rotation = (i - Math.floor(focalIndex)) * 4;
+            const scale = 0.75 + (i * 0.04);
+            const zIndex = i;
+
+            let opacity = 1;
+            let pointerEvents = 'auto';
+
+            if (i >= TOTAL_CARDS - 1) {
+                opacity = 0;
+                pointerEvents = 'none';
+            }
+
+            const shadowAlpha = 0.15 + (i * 0.04);
+            const shadow = `-15px -30px 60px -15px rgba(0,0,0,${shadowAlpha})`;
+
+            stackStates.push({
+                transform: `translate(-50%, -50%) translate(${xOffset}vw, ${yOffset}vh) rotate(${rotation}deg) scale(${scale})`,
+                zIndex,
+                opacity,
+                shadow,
+                pointerEvents
+            });
+        }
+
+        const flyOutState = {
+            transform: `translate(-50%, -50%) translate(-45vw, -130vh) rotate(-30deg) scale(0.65)`,
+            zIndex: -1,
+            opacity: 0,
+            shadow: 'none',
+            pointerEvents: 'none'
+        };
+
+        const snapBackState = {
+            transform: `translate(-50%, -50%) translate(-20vw, 130vh) rotate(30deg) scale(1.1)`,
+            zIndex: TOTAL_CARDS + 1,
+            opacity: 0,
+            shadow: 'none',
+            pointerEvents: 'none'
+        };
+
+        function applyState(el, state) {
+            el.style.transform = state.transform;
+            el.style.zIndex = state.zIndex;
+            el.style.opacity = state.opacity;
+            el.style.boxShadow = state.shadow;
+            el.style.pointerEvents = state.pointerEvents || 'auto';
+        }
+
+        function initGallery() {
+            galleryData.forEach((data, index) => {
+                const el = document.createElement('div');
+
+                el.className = `w-[80vw] max-w-[400px] aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden card-transition origin-center`;
+
+                if (data.theme === 'red') {
+                    el.classList.add('bg-[#E53935]');
+                } else if (data.theme === 'light') {
+                    el.classList.add('bg-white');
+                } else {
+                    el.classList.add('bg-[#111111]');
+                }
+
+                el.id = data.id;
+                el.innerHTML = data.content;
+                container.appendChild(el);
+
+                cards.push(el);
+                applyState(el, stackStates[index]);
+            });
+
+            setTimeout(startLoop, 100);
+        }
+
+        // --- Standard Forward Cycle ---
+        function cycleCards() {
+            if (cards.length === 0) return;
+
+            // Instantly pull logical array so we can safely process rapidly
+            const frontCard = cards.shift();
+            cards.push(frontCard);
+
+            clearTimeout(frontCard.animationTimer);
+            frontCard.isFlyingOut = true;
+            applyState(frontCard, flyOutState);
+
+            for (let i = 0; i < TOTAL_CARDS - 1; i++) {
+                const card = cards[i];
+                // Handle cards forced to wrap around due to rapid scrolling
+                if (card.isFlyingOut) {
+                    clearTimeout(card.animationTimer);
+                    card.isFlyingOut = false;
+                    card.classList.add('card-snap');
+                    applyState(card, snapBackState); // Teleport it to bottom so it doesn't cross the screen
+                    void card.offsetWidth;
+                    card.classList.remove('card-snap');
+                }
+                applyState(card, stackStates[i]);
+            }
+
+            // Schedule the return of the card that just flew out
+            frontCard.animationTimer = setTimeout(() => {
+                if (frontCard.isFlyingOut) {
+                    frontCard.isFlyingOut = false;
+                    frontCard.classList.add('card-snap');
+                    applyState(frontCard, snapBackState);
+                    void frontCard.offsetWidth;
+                    frontCard.classList.remove('card-snap');
+
+                    if (cards[TOTAL_CARDS - 1] === frontCard) {
+                        applyState(frontCard, stackStates[TOTAL_CARDS - 1]);
+                    }
+                }
+            }, transitionTime);
+
+            resetProgress();
+        }
+
+        // --- Reverse Cycle (triggered by scrolling up) ---
+        function cycleCardsReverse() {
+            if (cards.length === 0) return;
+
+            const backCard = cards.pop();
+            cards.unshift(backCard);
+
+            clearTimeout(backCard.animationTimer);
+            backCard.isFlyingOut = false;
+
+            // Instantly snap the bottom card to the top left so it can elegantly fly back IN
+            backCard.classList.add('card-snap');
+            applyState(backCard, flyOutState);
+            void backCard.offsetWidth;
+            backCard.classList.remove('card-snap');
+
+            for (let i = 0; i < TOTAL_CARDS; i++) {
+                const card = cards[i];
+                if (card.isFlyingOut) {
+                    // Clears mid-flight timeout if a card was leaving but is suddenly asked to stay
+                    clearTimeout(card.animationTimer);
+                    card.isFlyingOut = false;
+                }
+                applyState(card, stackStates[i]);
+            }
+
+            resetProgress();
+        }
+
+        // --- Fluid Interactive Mouse Wheel Scroll ---
+        let scrollThrottle = false;
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+
+            let delta = Math.abs(e.deltaY);
+
+            // Ignore minor trackpad noise/drift to prevent accidental firing
+            if (delta < 5) return;
+
+            // Lock to prevent handling hundreds of events per single physical swipe
+            if (scrollThrottle) return;
+            scrollThrottle = true;
+
+            // --- Dynamic Speed Calculation ---
+            // We map the scroll intensity (deltaY) to the CSS transition duration.
+            // Capping delta at 600 for max speed calculation.
+            let clampedDelta = Math.min(Math.max(delta, 10), 600);
+            let speedFactor = (clampedDelta - 10) / 590; // Generates a value between 0.0 (slow) and 1.0 (fast)
+
+            // Map the 0-1 factor to a duration between 1200ms (slow) and 200ms (fast)
+            transitionTime = 1200 - (speedFactor * 1000);
+
+            // Set the CSS variable so the visual CSS transitions precisely match our JS timing
+            document.documentElement.style.setProperty('--card-transition-duration', `${transitionTime / 1000}s`);
+
+            // Wait until user actually stops scrolling to revert to the normal, majestic 1.2s sweep
+            clearTimeout(window.scrollEndTimer);
+            window.scrollEndTimer = setTimeout(() => {
+                document.documentElement.style.setProperty('--card-transition-duration', '1.2s');
+                transitionTime = 1200;
+            }, 300);
+
+            clearInterval(animationInterval);
+
+            if (e.deltaY > 0) {
+                cycleCards();
+            } else if (e.deltaY < 0) {
+                cycleCardsReverse();
+            }
+
+            // Dynamic throttle: Release the lock proportionally fast so rapid scrolling cycles multiple cards smoothly!
+            // E.g., if duration is 200ms, throttle releases in just 50ms to queue up the next card immediately.
+            let dynamicThrottle = Math.max(40, transitionTime / 4);
+            setTimeout(() => { scrollThrottle = false; }, dynamicThrottle);
+
+            animationInterval = setInterval(cycleCards, CYCLE_TIME);
+        }, { passive: false });
+
+        function startLoop() {
+            clearInterval(animationInterval);
+            animationInterval = setInterval(cycleCards, CYCLE_TIME);
+            resetProgress();
+        }
+
+        function resetProgress() {
+            progressBar.style.transition = 'none';
+            progressBar.style.width = '0%';
+            void progressBar.offsetWidth;
+
+            progressBar.style.transition = `width ${CYCLE_TIME}ms linear`;
+            progressBar.style.width = '100%';
+        }
+
+        document.addEventListener('DOMContentLoaded', initGallery);
+
+    </script>
+</body>
+
+</html>

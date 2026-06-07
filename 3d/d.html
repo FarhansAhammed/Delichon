@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Glassmorphism Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background-color: #0f0f11;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card-overlay {
+            background: linear-gradient(to top, rgba(30, 30, 30, 0.95) 0%, rgba(30, 30, 30, 0.4) 40%, transparent 100%);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        /* 3D Carousel Setup */
+        .carousel-container {
+            perspective: 1200px;
+            /* Gives the 3D depth */
+            transform-style: preserve-3d;
+        }
+
+        #carousel {
+            /* CRITICAL FIX: Allows the 3D perspective to pass through to the cards */
+            transform-style: preserve-3d;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-item {
+            position: absolute;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-style: preserve-3d;
+            will-change: transform, opacity, filter, box-shadow;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Ambient Background Blur */
+        .ambient-bg {
+            transition: background-image 1s ease-in-out;
+            filter: blur(60px) brightness(0.6) saturate(1.5);
+            transform: scale(1.2);
+        }
+
+        /* Smooth Icon Hover */
+        .control-btn {
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            color: #ffffff;
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+        }
+
+        /* Responsive height adjustments */
+        @media (max-width: 768px) {
+            .carousel-item {
+                width: 220px;
+                height: 280px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .carousel-item {
+                width: 320px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-white h-screen w-full flex flex-col items-center justify-center relative select-none">
+
+    <!-- Ambient Blurred Background -->
+    <div id="ambient-bg" class="absolute inset-0 ambient-bg bg-cover bg-center z-0"></div>
+    <div class="absolute inset-0 bg-black/30 z-0"></div> <!-- Darkening overlay -->
+
+    <!-- 3D Carousel Gallery -->
+    <div class="relative w-full flex-1 flex items-center justify-center carousel-container z-10 mt-[-60px]">
+        <div id="carousel">
+            <!-- Cards will be injected by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Liquid Glass Control Bar -->
+    <div
+        class="absolute bottom-10 w-11/12 max-w-5xl glass-panel rounded-[40px] px-6 py-4 flex items-center justify-between z-50">
+
+        <!-- Left Controls (Playback) -->
+        <div class="flex items-center space-x-6 text-gray-300 ml-2">
+            <button onclick="prevSlide()" class="control-btn focus:outline-none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                    <line x1="5" y1="19" x2="5" y2="5"></line>
+                </svg>
+            </button>
+            <button onclick="togglePlay()" id="play-pause-btn" class="control-btn focus:outline-none text-white">
+                <!-- Pause Icon Default -->
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+            </button>
+            <button onclick="nextSlide(true)" class="control-btn focus:outline-none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                    <line x1="19" y1="5" x2="19" y2="19"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Center (Now Playing Info) -->
+        <div class="flex items-center bg-black/20 rounded-full pr-6 pl-2 py-1 border border-white/5 space-x-4">
+            <img id="current-thumb" src="" alt="Thumbnail"
+                class="w-10 h-10 rounded-full object-cover shadow-md border border-white/20">
+            <div class="flex flex-col justify-center">
+                <span id="current-title"
+                    class="text-sm font-semibold tracking-wide truncate max-w-[120px] md:max-w-[200px]">Loading...</span>
+                <span id="current-subtitle" class="text-xs text-gray-400 truncate max-w-[120px] md:max-w-[200px]">Please
+                    wait</span>
+            </div>
+            <!-- Animated Sound Bars -->
+            <div class="flex items-end space-x-[2px] h-4 ml-2 opacity-70" id="sound-bars">
+                <div class="w-1 bg-white rounded-t-sm h-full animate-[bounce_1s_infinite] origin-bottom"></div>
+                <div class="w-1 bg-white rounded-t-sm h-3/4 animate-[bounce_1.2s_infinite_0.1s] origin-bottom"></div>
+                <div class="w-1 bg-white rounded-t-sm h-1/2 animate-[bounce_0.8s_infinite_0.2s] origin-bottom"></div>
+            </div>
+        </div>
+
+        <!-- Right Controls (Extra actions) -->
+        <div class="flex items-center space-x-6 text-gray-300 mr-2 hidden md:flex">
+            <button class="control-btn focus:outline-none">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    <line x1="9" y1="10" x2="15" y2="10"></line>
+                    <line x1="12" y1="7" x2="12" y2="13"></line>
+                </svg>
+            </button>
+            <button class="control-btn focus:outline-none">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+            </button>
+            <button class="control-btn focus:outline-none flex items-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Placeholder Images & Data (High quality aesthetic placeholders)
+        const galleryData = [
+            { id: 1, title: 'Neon Nights', subtitle: 'Cyberpunk Aesthetic', img: 'https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=800&auto=format&fit=crop' },
+            { id: 2, title: 'Desert Mirage', subtitle: 'Nature Collections', img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop' },
+            { id: 3, title: 'Urban Echoes', subtitle: 'Cityscapes', img: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=800&auto=format&fit=crop' },
+            { id: 4, title: 'Ocean Deep', subtitle: 'Ambient Waves', img: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=800&auto=format&fit=crop' },
+            { id: 5, title: 'Starlight', subtitle: 'Astrophotography', img: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=800&auto=format&fit=crop' },
+            { id: 6, title: 'Crimson Peak', subtitle: 'Mountain Range', img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop' },
+            { id: 7, title: 'Abstract Art', subtitle: 'Fluid Dynamics', img: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=800&auto=format&fit=crop' }
+        ];
+
+        let currentIndex = 0;
+        let isPlaying = true;
+        let slideInterval;
+        const carousel = document.getElementById('carousel');
+
+        // Shuffle function to satisfy the "randomly" requirement on initial load
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Initialize Gallery
+        function initGallery() {
+            shuffleArray(galleryData); // Randomize sequence
+
+            galleryData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'carousel-item group';
+                card.id = `card-${index}`;
+                card.onclick = () => jumpToSlide(index);
+
+                card.innerHTML = `
+                    <div class="w-full h-full relative">
+                        <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover">
+                        
+                        <!-- Text Glass Overlay at the bottom of the card -->
+                        <div class="absolute bottom-0 left-0 right-0 p-6 glass-card-overlay transition-opacity duration-300 card-info">
+                            <h2 class="text-xl font-bold text-white mb-1 drop-shadow-md">${item.title}</h2>
+                            <p class="text-sm text-gray-300 drop-shadow-md">${item.subtitle}</p>
+                        </div>
+                    </div>
+                `;
+                carousel.appendChild(card);
+            });
+
+            updateCarousel();
+            startAutoPlay();
+        }
+
+        // Core 3D Calculation & Update
+        function updateCarousel() {
+            const total = galleryData.length;
+
+            galleryData.forEach((item, index) => {
+                const el = document.getElementById(`card-${index}`);
+                const infoOverlay = el.querySelector('.card-info');
+
+                // Calculate shortest distance in a circular array
+                let diff = index - currentIndex;
+                const half = Math.floor(total / 2);
+
+                if (diff > half) diff -= total;
+                if (diff < -half) diff += total;
+
+                const absDiff = Math.abs(diff);
+                let transform = '';
+                let zIndex = 1;
+                let opacity = 0;
+                let filter = '';
+                let pointerEvents = 'none';
+                let boxShadow = 'none';
+
+                if (diff === 0) {
+                    // Center Active Card
+                    transform = 'translateX(0) scale(1) translateZ(100px) rotateY(0deg)';
+                    zIndex = 30;
+                    opacity = 1;
+                    filter = 'brightness(1)';
+                    pointerEvents = 'auto';
+                    boxShadow = '0 20px 50px rgba(0,0,0,0.6)'; // Add shadow only to the center active card
+                    if (infoOverlay) infoOverlay.style.opacity = '1';
+                } else {
+                    // Background cards bending inwards
+                    const direction = Math.sign(diff); // 1 for right, -1 for left
+
+                    // Left cards face right (+deg), Right cards face left (-deg)
+                    const rotate = -direction * (45 + (absDiff - 1) * 5);
+
+                    // X overlap spacing: widened by increasing base and multiplier
+                    const xOffset = direction * (70 + (absDiff - 1) * 45);
+                    const zOffset = -150 - (absDiff - 1) * 150;
+                    const scale = 0.85 - (absDiff - 1) * 0.1;
+
+                    transform = `translateX(${xOffset}%) scale(${scale}) translateZ(${zOffset}px) rotateY(${rotate}deg)`;
+                    zIndex = 30 - absDiff;
+                    opacity = 1 - (absDiff * 0.15); // Keeps more cards visible
+                    filter = `brightness(${0.5 - (absDiff * 0.1)})`;
+                    pointerEvents = 'auto';
+                    boxShadow = 'none'; // No shadow for background cards
+                    if (infoOverlay) infoOverlay.style.opacity = '0';
+                }
+
+                // Apply styles smoothly
+                el.style.transform = transform;
+                el.style.zIndex = zIndex;
+                el.style.opacity = opacity;
+                el.style.filter = filter;
+                el.style.pointerEvents = pointerEvents;
+                el.style.boxShadow = boxShadow;
+            });
+
+            updateUIInfo();
+        }
+
+        // Update Background and Bottom Bar
+        function updateUIInfo() {
+            const currentItem = galleryData[currentIndex];
+            document.getElementById('ambient-bg').style.backgroundImage = `url('${currentItem.img}')`;
+            document.getElementById('current-thumb').src = currentItem.img;
+            document.getElementById('current-title').textContent = currentItem.title;
+            document.getElementById('current-subtitle').textContent = currentItem.subtitle;
+        }
+
+        // Controls
+        function nextSlide(manual = false) {
+            currentIndex = (currentIndex + 1) % galleryData.length;
+            updateCarousel();
+            if (manual) resetAutoPlay();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + galleryData.length) % galleryData.length;
+            updateCarousel();
+            resetAutoPlay();
+        }
+
+        function jumpToSlide(index) {
+            if (currentIndex === index) return;
+            currentIndex = index;
+            updateCarousel();
+            resetAutoPlay();
+        }
+
+        // Auto Play Mechanics
+        function startAutoPlay() {
+            if (!isPlaying) return;
+            slideInterval = setInterval(() => nextSlide(false), 3000);
+            updatePlayIcon();
+        }
+
+        function stopAutoPlay() {
+            clearInterval(slideInterval);
+        }
+
+        function resetAutoPlay() {
+            stopAutoPlay();
+            if (isPlaying) startAutoPlay();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                startAutoPlay();
+                document.getElementById('sound-bars').classList.remove('opacity-30', 'animate-none');
+                document.getElementById('sound-bars').innerHTML = `
+                    <div class="w-1 bg-white rounded-t-sm h-full animate-[bounce_1s_infinite] origin-bottom"></div>
+                    <div class="w-1 bg-white rounded-t-sm h-3/4 animate-[bounce_1.2s_infinite_0.1s] origin-bottom"></div>
+                    <div class="w-1 bg-white rounded-t-sm h-1/2 animate-[bounce_0.8s_infinite_0.2s] origin-bottom"></div>
+                `;
+            } else {
+                stopAutoPlay();
+                document.getElementById('sound-bars').classList.add('opacity-30');
+                document.getElementById('sound-bars').innerHTML = `
+                    <div class="w-1 bg-white rounded-t-sm h-1/4 origin-bottom"></div>
+                    <div class="w-1 bg-white rounded-t-sm h-1/4 origin-bottom"></div>
+                    <div class="w-1 bg-white rounded-t-sm h-1/4 origin-bottom"></div>
+                `;
+            }
+            updatePlayIcon();
+        }
+
+        function updatePlayIcon() {
+            const btn = document.getElementById('play-pause-btn');
+            if (isPlaying) {
+                // Pause Icon
+                btn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+            } else {
+                // Play Icon
+                btn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', initGallery);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide(true);
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+        });
+
+    </script>
+</body>
+
+</html>
