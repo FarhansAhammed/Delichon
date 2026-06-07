@@ -9,6 +9,12 @@ import * as THREE from 'three';
 function DElement({ progress }) {
   const groupRef = useRef();
   const { scene } = useGLTF('/3d/D.glb');
+  const { viewport } = useThree();
+
+  const isMobile = viewport.width < 7;
+  const targetScale = isMobile ? 2.2 : 4.0;
+  const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
+  const targetYOffset = isMobile ? 0.70 : 0.20;
 
   const clonedScene = useMemo(() => {
     const clone = scene.clone();
@@ -36,7 +42,8 @@ function DElement({ progress }) {
       const exitProgress = THREE.MathUtils.smoothstep(p, 0.02, 0.15);
 
       // Animation Logic
-      groupRef.current.position.y = 0.20 + exitProgress * 14;
+      groupRef.current.position.x = targetX;
+      groupRef.current.position.y = targetYOffset + exitProgress * 14;
       groupRef.current.position.z = -1.6 - exitProgress * 6;
 
       groupRef.current.traverse((child) => {
@@ -51,9 +58,9 @@ function DElement({ progress }) {
     <primitive
       ref={groupRef}
       object={clonedScene}
-      position={[2.5, 0.5, -1.0]}
+      position={[targetX, isMobile ? 0.70 : 0.5, -1.0]}
       rotation={[0.00, -0.00, 0]}
-      scale={4.0}
+      scale={targetScale}
     />
   );
 }
@@ -63,7 +70,13 @@ function DElement({ progress }) {
    ───────────────────────────────────────────── */
 function SymbolBackground({ progress }) {
   const groupRef = useRef();
+  const { viewport } = useThree();
   const color = "#5fb2ff"; // Premium sky blue
+
+  const isMobile = viewport.width < 7;
+  const targetScale = isMobile ? 1.8 : 3.4;
+  const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
+  const targetYOffset = isMobile ? 0.70 : 0.20;
 
   useFrame(() => {
     if (groupRef.current) {
@@ -71,7 +84,8 @@ function SymbolBackground({ progress }) {
       const exitProgress = THREE.MathUtils.smoothstep(p, 0.02, 0.15);
 
       // Mirror DElement movement precisely
-      groupRef.current.position.y = 0.20 + exitProgress * 14;
+      groupRef.current.position.x = targetX;
+      groupRef.current.position.y = targetYOffset + exitProgress * 14;
       groupRef.current.position.z = -1.65 - exitProgress * 6;
 
       // Handle opacity fade out with scroll
@@ -84,7 +98,7 @@ function SymbolBackground({ progress }) {
   });
 
   return (
-    <group ref={groupRef} position={[2.5, 0.2, -1.65]} scale={3.4}>
+    <group ref={groupRef} position={[targetX, isMobile ? 0.70 : 0.2, -1.65]} scale={targetScale}>
       {/* Outer Ring */}
       <mesh>
         <torusGeometry args={[0.85, 0.005, 16, 100]} />
@@ -250,7 +264,6 @@ function BirdModel({ scrollProgress }) {
 
   // Perfectly balanced intersection with the lower horizontal bar of the "D"
   const currentPos = useRef(new THREE.Vector3(0.5, -0.2, 1.0));
-  const heroPos = new THREE.Vector3(0.5, -0.2, 1.0);
   const heroRotY = Math.PI / 2.0; // Rotated a bit to the left
 
   useFrame((state, delta) => {
@@ -267,6 +280,16 @@ function BirdModel({ scrollProgress }) {
     if (birdRef.current) {
       const p = scrollProgress.current;
 
+      const isMobile = viewport.width < 7;
+      const responsiveLimitX = Math.min(viewport.width / 2 - 0.7, 6.2);
+      const rightX = responsiveLimitX;
+      const leftX = -responsiveLimitX;
+
+      const heroPosX = isMobile ? 0.0 : 0.5;
+      const heroPosY = isMobile ? 0.4 : -0.2; // shift up slightly on mobile
+      const initialScale = isMobile ? 0.75 : 1.2;
+      const patrolScale = isMobile ? 0.35 : 0.55;
+
       // Stage Calculation: 4 transitions based on the image trail
       const stage = Math.min(Math.floor(p * 4), 3);
       const stageP = THREE.MathUtils.smoothstep((p * 4) % 1, 0, 1);
@@ -274,18 +297,10 @@ function BirdModel({ scrollProgress }) {
       let targetX, targetY, targetZ = 0.0;
       let targetRotY = heroRotY;
       let targetRotX = 0;
-      let currentScale = 0.55;
-
-      // Vertical Tracking: The bird moves UP with the content as the user scrolls DOWN.
-      // This makes it "patrol" the sections as they pass by.
-      const riseY = -7.5 + (p * 32);
-
-      // X-Coordinates for gutters (Wider for modern screens)
-      const rightX = 6.2;
-      const leftX = -6.2;
+      let currentScale = patrolScale;
 
       // Vertical Points: Cinematic "Lift-off" then steady descent down the viewport
-      const yPoints = [heroPos.y, 1.6, 0.0, -1.6, -3.4];
+      const yPoints = [heroPosY, 1.6, 0.0, -1.6, -3.4];
 
       // ROTATION RULE: Face Inward
       const rotRight = Math.PI / 2;
@@ -296,9 +311,9 @@ function BirdModel({ scrollProgress }) {
 
       switch (stage) {
         case 0: // PHASE 1: D (Right) -> Left (Gutter)
-          targetX = THREE.MathUtils.lerp(heroPos.x, leftX, stageP);
+          targetX = THREE.MathUtils.lerp(heroPosX, leftX, stageP);
           targetRotY = THREE.MathUtils.lerp(heroRotY, rotRight, stageP);
-          currentScale = THREE.MathUtils.lerp(1.2, 0.55, stageP);
+          currentScale = THREE.MathUtils.lerp(initialScale, patrolScale, stageP);
           break;
         case 1: // PHASE 2: Left -> Right (Gutter)
           targetX = THREE.MathUtils.lerp(leftX, rightX, stageP);

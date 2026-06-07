@@ -46,6 +46,15 @@ html.lenis, html.lenis body {
 }
 
 .work-card {
+  position: relative;
   will-change: transform, filter, opacity;
   transition: transform 0.1s linear, filter 0.1s linear, opacity 0.1s linear;
 }
+
+@media (min-width: 768px) {
+  .work-card {
+    position: sticky;
+    top: var(--stack-top);
+  }
+}
+
