@@ -26,3 +26,9 @@ dist-ssr
 /public/bird
 scratch/
 
+# Allow specific 3D files to be committed
+!/public/3d/D.glb
+!/public/3d/bird_v2.glb
+!/public/3d/cloud_test.glb
+
+
