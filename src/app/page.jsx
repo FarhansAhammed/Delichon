@@ -98,80 +98,10 @@ const services = [
   }
 ];
 
-const differentiators = [
-  {
-    title: "Precision Engineering",
-    label: "Precision Eng.",
-    desc: "We write clean, modular, and extensively documented code focused on structural integrity and standard compliance.",
-    image: "/why/precision.png",
-    x: -250,
-    y: -190,
-    w: "w-[150px]",
-    h: "h-[110px]",
-    tilt: -12
-  },
-  {
-    title: "Scalable Architecture",
-    label: "Scalable Arch.",
-    desc: "We design cloud-ready systems and database structures that gracefully handle user growth and traffic spikes.",
-    image: "/why/scalable.png",
-    x: 20,
-    y: -260,
-    w: "w-[120px]",
-    h: "h-[140px]",
-    tilt: 6
-  },
-  {
-    title: "Modern Technology Stack",
-    label: "Modern Stack",
-    desc: "We leverage industry-proven languages and frameworks (React, Next.js, Node, Three.js) to build future-proof products.",
-    image: "/why/techstack.png",
-    x: 270,
-    y: -190,
-    w: "w-[160px]",
-    h: "h-[115px]",
-    tilt: -8
-  },
-  {
-    title: "User-Centered Design",
-    label: "UX Design",
-    desc: "Our UI/UX strategies place the target user at the core, minimizing friction to maximize conversions.",
-    image: "/why/uxdesign.png",
-    x: 290,
-    y: 110,
-    w: "w-[125px]",
-    h: "h-[155px]",
-    tilt: 10
-  },
-  {
-    title: "Performance Optimization",
-    label: "Performance",
-    desc: "Every asset and script is audited and compiled for lightning-fast speeds and search visibility.",
-    image: "/why/performance.png",
-    x: -20,
-    y: 250,
-    w: "w-[145px]",
-    h: "h-[110px]",
-    tilt: -6
-  },
-  {
-    title: "Long-Term Maintainability",
-    label: "Maintainability",
-    desc: "We engineer codebases designed to be easily tested, extended, and maintained for years to come.",
-    image: "/why/maintainability.png",
-    x: -290,
-    y: 90,
-    w: "w-[160px]",
-    h: "h-[120px]",
-    tilt: 12
-  }
-];
-
 export default function App() {
   const containerRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeDiffIndex, setActiveDiffIndex] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -404,60 +334,68 @@ export default function App() {
     };
   }, []);
 
-  // Why Choose Us Orbital animation
+  // Why Choose Us Elliptical Cards scroll timeline
   useEffect(() => {
-    const orbitWrappers = document.querySelectorAll('.why-orbit-wrapper');
-    const satellites = document.querySelectorAll('.why-satellite');
-    
-    if (orbitWrappers.length === 0) return;
+    const cards = document.querySelectorAll('.why-card-desktop');
+    const triggerElement = document.querySelector('.why-scroll-container');
+    if (cards.length === 0 || !triggerElement) return;
 
-    let tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".why-scroll-track",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1.2,
-        invalidateOnRefresh: true,
-      }
-    });
+    let tl;
 
-    orbitWrappers.forEach((wrapper, index) => {
-      const satellite = satellites[index];
-      const card = differentiators[index];
+    const initWhyTimeline = () => {
+      if (tl) tl.kill();
 
-      // Initial state:
-      // Wrapper is translated off-screen to the left (-1100px) and rotated -120deg
-      // Satellite is rotated opposite (+120deg) to remain upright
-      gsap.set(wrapper, {
-        x: -1100,
-        rotation: -120,
-        scale: 0.3,
-        opacity: 0
-      });
-      gsap.set(satellite, {
-        rotation: 120
+      tl = gsap.timeline({
+        scrollTrigger: {
+          id: "why-trigger",
+          trigger: triggerElement,
+          start: "top 75%",
+          end: "bottom 80%",
+          scrub: 1.2,
+          invalidateOnRefresh: true,
+        }
       });
 
-      // Staggered timeline entry
-      const startOffset = index * 0.25;
-      
-      tl.to(wrapper, {
-        x: 0,
-        rotation: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 1.8,
-        ease: "power2.out"
-      }, startOffset);
+      cards.forEach((card, index) => {
+        const dx = parseFloat(card.getAttribute('data-dx') || '0');
+        const dy = parseFloat(card.getAttribute('data-dy') || '0');
+        const rot = parseFloat(card.getAttribute('data-rot') || '0');
 
-      tl.to(satellite, {
-        rotation: card.tilt,
-        duration: 1.8,
-        ease: "power2.out"
-      }, startOffset);
-    });
+        // Initial state: off-screen left, scaled down, rotated
+        gsap.set(card, {
+          x: -1200,
+          y: dy + (index - 2.5) * 60, // slightly vertical spread to look organic
+          rotation: -360,
+          scale: 0.3,
+          opacity: 0,
+        });
+
+        // Animate to final position and rotation
+        tl.to(card, {
+          x: dx,
+          y: dy,
+          rotation: rot,
+          scale: 1,
+          opacity: 1,
+          duration: 1.8,
+          ease: "power2.out",
+        }, index * 0.15); // Stagger entry
+      });
+    };
+
+    const timer = setTimeout(initWhyTimeline, 600);
+
+    const handleResize = () => {
+      clearTimeout(timer);
+      initWhyTimeline();
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
       if (tl) tl.kill();
     };
   }, []);
@@ -674,88 +612,143 @@ export default function App() {
           </div>
         </section>
 
-        {/* WHY CHOOSE US SECTION — ORBITAL LAYOUT */}
-        <section className="why-scroll-track relative w-full h-[200vh] pointer-events-auto border-t border-[#0f172a]/5">
-          <div className="why-sticky-container sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden py-10 px-4 sm:px-6">
-            
-            {/* Header Content */}
-            <div className="absolute top-8 sm:top-12 md:top-16 text-center max-w-[800px] mx-auto z-10 px-4">
-              <div className="text-[#38bdf8] text-[13px] font-medium mb-3 uppercase tracking-wider">Why Delichon</div>
-              <h2 className="font-serif text-[28px] sm:text-[36px] lg:text-[40px] leading-[1.2] text-[#0f172a] tracking-tight">
+        {/* WHY CHOOSE US SECTION - Elliptical Layout with Scroll Animation */}
+        <section className="why-scroll-container relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto border-t border-[#0f172a]/5 overflow-visible">
+          {/* Desktop Elliptical Layout */}
+          <div className="hidden lg:block relative w-full h-[800px] overflow-visible">
+            {/* Center Text Block */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-[420px] z-10 pointer-events-auto">
+              <div className="text-[#38bdf8] text-[13px] font-medium mb-4">Why Delichon</div>
+              <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.15] text-[#0f172a] tracking-tight mb-4 select-none">
+                Why Global Brands Choose Delichon
+              </h2>
+              <p className="font-sans text-[13.5px] leading-relaxed text-[#0f172a]/65 select-none">
+                We bridge the gap between creative visual architecture and strict engineering integrity to build performant products.
+              </p>
+            </div>
+
+            {/* Floating Cards */}
+            {[
+              { 
+                title: "Precision Engineering", 
+                desc: "We write clean, modular, and extensively documented code focused on structural integrity and standard compliance.",
+                img: "/why/precision.png",
+                dx: -380,
+                dy: -180,
+                rot: -6
+              },
+              { 
+                title: "Scalable Architecture", 
+                desc: "We design cloud-ready systems and database structures that gracefully handle user growth and traffic spikes.",
+                img: "/why/scalable.png",
+                dx: 0,
+                dy: -280,
+                rot: 3
+              },
+              { 
+                title: "Modern Technology Stack", 
+                desc: "We leverage industry-proven languages and frameworks (React, Next.js, Node, Three.js) to build future-proof products.",
+                img: "/why/techstack.png",
+                dx: 380,
+                dy: -180,
+                rot: -8
+              },
+              { 
+                title: "User-Centered Design", 
+                desc: "Our UI/UX strategies place the target user at the core, minimizing friction to maximize conversions.",
+                img: "/why/uxdesign.png",
+                dx: -380,
+                dy: 180,
+                rot: 5
+              },
+              { 
+                title: "Performance Optimization", 
+                desc: "Every asset and script is audited and compiled for lightning-fast speeds and search visibility.",
+                img: "/why/performance.png",
+                dx: 0,
+                dy: 280,
+                rot: -4
+              },
+              { 
+                title: "Long-Term Maintainability", 
+                desc: "We engineer codebases designed to be easily tested, extended, and maintained for years to come.",
+                img: "/why/maintainability.png",
+                dx: 380,
+                dy: 180,
+                rot: 8
+              }
+            ].map((item, i) => (
+              <article 
+                key={i} 
+                className="why-card-desktop absolute left-1/2 top-1/2 w-[240px] h-[210px] -ml-[120px] -mt-[105px] flex flex-col justify-between p-3 rounded-2xl bg-white border border-[#0f172a]/5 shadow-[0_10px_30px_rgba(15,23,42,0.03)] hover:shadow-[0_15px_40px_rgba(15,23,42,0.06)] hover:border-[#0f172a]/10 hover:scale-[1.03] transition-all duration-300 pointer-events-auto"
+                data-dx={item.dx}
+                data-dy={item.dy}
+                data-rot={item.rot}
+              >
+                <div className="w-full aspect-[4/3] bg-[#f8fafc] rounded-xl overflow-hidden flex items-center justify-center border border-[#0f172a]/5">
+                  <img src={item.img} alt={item.title} className="w-full h-full object-contain p-1" />
+                </div>
+                <div>
+                  <h3 className="font-sans font-bold text-[13.5px] text-[#0f172a] tracking-tight">{item.title}</h3>
+                  <p className="font-sans text-[11px] leading-relaxed text-[#0f172a]/55 mt-1">{item.desc}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* Mobile/Tablet Fallback Layout */}
+          <div className="block lg:hidden">
+            <div className="text-center max-w-[800px] mx-auto mb-16">
+              <div className="text-[#38bdf8] text-[13px] font-medium mb-6">Why Delichon</div>
+              <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight">
                 Why Global Brands Choose Delichon for Software Development
               </h2>
             </div>
 
-            {/* Orbit System */}
-            <div className="relative w-full flex items-center justify-center mt-20 md:mt-24">
-              <div className="relative w-[680px] h-[680px] flex items-center justify-center scale-[0.43] xs:scale-[0.55] sm:scale-[0.7] md:scale-[0.85] lg:scale-100 origin-center transition-all duration-300">
-                
-                {/* Visual Guides */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <svg className="w-full h-full text-[#0f172a]/5" viewBox="0 0 680 680">
-                    <circle cx="340" cy="340" r="260" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 6" />
-                    <circle cx="340" cy="340" r="170" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
-                  </svg>
-                </div>
-
-                {/* Central Glassmorphic Details Card */}
-                {/* Central Details Card - rendered directly on the background like ss.jpg */}
-                <div className="absolute text-center max-w-[320px] sm:max-w-[360px] z-10 pointer-events-none select-none px-4 flex flex-col justify-center items-center">
-                  <div className="text-[#38bdf8] text-[10px] font-bold uppercase tracking-widest mb-3">
-                    {activeDiffIndex !== null ? `0${activeDiffIndex + 1} / 06` : "Core Standards"}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+              {[
+                { 
+                  title: "Precision Engineering", 
+                  desc: "We write clean, modular, and extensively documented code focused on structural integrity and standard compliance.",
+                  img: "/why/precision.png"
+                },
+                { 
+                  title: "Scalable Architecture", 
+                  desc: "We design cloud-ready systems and database structures that gracefully handle user growth and traffic spikes.",
+                  img: "/why/scalable.png"
+                },
+                { 
+                  title: "Modern Technology Stack", 
+                  desc: "We leverage industry-proven languages and frameworks (React, Next.js, Node, Three.js) to build future-proof products.",
+                  img: "/why/techstack.png"
+                },
+                { 
+                  title: "User-Centered Design", 
+                  desc: "Our UI/UX strategies place the target user at the core, minimizing friction to maximize conversions.",
+                  img: "/why/uxdesign.png"
+                },
+                { 
+                  title: "Performance Optimization", 
+                  desc: "Every asset and script is audited and compiled for lightning-fast speeds and search visibility.",
+                  img: "/why/performance.png"
+                },
+                { 
+                  title: "Long-Term Maintainability", 
+                  desc: "We engineer codebases designed to be easily tested, extended, and maintained for years to come.",
+                  img: "/why/maintainability.png"
+                }
+              ].map((item, i) => (
+                <article key={i} className="flex flex-col gap-4 bg-white/40 border border-[#0f172a]/5 p-5 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.01)]">
+                  <div className="w-full aspect-[16/10] bg-[#f8fafc] rounded-xl overflow-hidden flex items-center justify-center border border-[#0f172a]/5 mb-2">
+                    <img src={item.img} alt={item.title} className="w-full h-full object-contain p-2" />
                   </div>
-                  <h3 className="font-serif text-[18px] lg:text-[22px] leading-tight text-[#0f172a] font-bold mb-3 transition-all duration-300">
-                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].title : "Why Global Brands Choose Delichon"}
-                  </h3>
-                  <p className="font-sans text-[11px] lg:text-[12.5px] leading-relaxed text-[#0f172a]/60 min-h-[66px] transition-all duration-300">
-                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].desc : "Hover over the outer cards to explore our key differentiators and software development standards."}
-                  </p>
-                </div>
-
-                {/* Satellite Nodes */}
-                {differentiators.map((item, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className="why-orbit-wrapper absolute w-full h-full top-0 left-0 flex items-center justify-center pointer-events-none"
-                      style={{ transformOrigin: 'center' }}
-                    >
-                      <div
-                        className={`why-satellite pointer-events-auto absolute flex flex-col items-center cursor-pointer transition-all duration-300 group ${
-                          activeDiffIndex !== null && activeDiffIndex !== i ? "opacity-30 scale-[0.9]" : "opacity-100 scale-100"
-                        }`}
-                        style={{
-                          left: '340px',
-                          top: '340px',
-                          width: '180px',
-                          height: '200px',
-                          // Scattered offsets from data
-                          transform: `translate(-50%, -50%) translate(${item.x}px, ${item.y}px)`,
-                          transformOrigin: 'center center',
-                        }}
-                        onMouseEnter={() => setActiveDiffIndex(i)}
-                        onMouseLeave={() => setActiveDiffIndex(null)}
-                      >
-                        {/* Rounded Rectangle Card - consistent with ss.jpg */}
-                        <div className={`${item.w} ${item.h} rounded-[20px] border border-black/5 bg-white shadow-[0_8px_25px_rgba(0,0,0,0.04)] overflow-hidden group-hover:border-[#38bdf8]/40 group-hover:shadow-[0_12px_30px_rgba(56,189,248,0.15)] transition-all duration-300`}>
-                          <img
-                            src={item.image}
-                            alt={item.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
-                        {/* Label */}
-                        <span className="mt-2 text-center font-sans font-bold text-[10px] sm:text-[11px] text-[#0f172a]/70 group-hover:text-[#38bdf8] transition-colors leading-tight px-1 max-w-[120px] uppercase tracking-wider select-none">
-                          {item.label}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-
-              </div>
+                  <div>
+                    <h3 className="font-sans font-bold text-[16px] text-[#0f172a] mb-2">{item.title}</h3>
+                    <p className="font-sans text-[13px] leading-relaxed text-[#0f172a]/60">{item.desc}</p>
+                  </div>
+                </article>
+              ))}
             </div>
-
           </div>
         </section>
 
