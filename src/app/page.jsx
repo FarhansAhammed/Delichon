@@ -12,6 +12,11 @@ const BirdCanvas = dynamic(() => import('../components/BirdCanvas'), {
   ssr: false,
 });
 
+// Dynamically import ServicesCanvas to disable SSR
+const ServicesCanvas = dynamic(() => import('../components/ServicesCanvas'), {
+  ssr: false,
+});
+
 gsap.registerPlugin(ScrollTrigger);
 
 class ErrorBoundary extends Component {
@@ -233,10 +238,10 @@ export default function App() {
         </section>
 
         {/* SERVICES SECTION */}
-        <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto">
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+        <section className="services-scroll-track relative w-full h-[300vh] pointer-events-auto">
+          <div className="sticky top-0 w-full h-screen flex flex-col lg:flex-row max-w-[1400px] mx-auto px-6 sm:px-10 py-10 lg:py-20 gap-12 lg:gap-16 items-center overflow-hidden">
             {/* Left Content */}
-            <div className="w-full lg:w-[30%]">
+            <div className="w-full lg:w-[30%] pointer-events-auto z-20">
               <div className="text-[#38bdf8] text-[13px] font-medium mb-6">What We Do</div>
               <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight mb-8">
                 Custom Software,<br />Web & Mobile App<br />Development Services.
@@ -250,51 +255,11 @@ export default function App() {
               </a>
             </div>
 
-            {/* Right Cards */}
-            <div className="w-full lg:w-[70%] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { 
-                  title: "Front-End Development", 
-                  desc: "High-performance, accessible, and interactive user interfaces built with React, Next.js, and modern tools for flawless digital experiences.", 
-                  icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" 
-                },
-                { 
-                  title: "Full-Stack Development", 
-                  desc: "End-to-end web applications engineered with secure backend systems, database scalability, and robust cloud integration.", 
-                  icon: "M4 7v10c0 2 16 2 16 0V7c0-2-16-2-16 0z M4 12c0 2 16 2 16 0" 
-                },
-                { 
-                  title: "Custom Software Development", 
-                  desc: "Tailored business applications and enterprise software platforms designed to solve complex operations and scale with your growth.", 
-                  icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 5h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z" 
-                },
-                { 
-                  title: "Android & iOS Applications", 
-                  desc: "Native and cross-platform mobile app development delivering premium user experiences on both iOS and Android devices.", 
-                  icon: "M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" 
-                },
-                { 
-                  title: "UI/UX Design", 
-                  desc: "Strategic user-experience architecture and sophisticated interface designs that blend minimalism with clear customer journeys.", 
-                  icon: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" 
-                },
-                { 
-                  title: "Product Engineering", 
-                  desc: "Complete digital product engineering from conceptual blueprint to cloud architecture, deployment, and long-term maintenance.", 
-                  icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" 
-                }
-              ].map((card, i) => (
-                <article key={i} className="bg-white/60 backdrop-blur-md border border-white p-6 sm:p-10 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:bg-white/80 transition-colors flex flex-col h-auto min-h-[350px] lg:h-[400px]">
-                  <div className="w-10 h-10 mb-8 lg:mb-auto text-[#38bdf8]">
-                    <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d={card.icon}></path></svg>
-                  </div>
-                  <div className="mt-auto">
-                    <h3 className="font-sans font-bold text-[18px] text-[#0f172a] mb-4 pr-4">{card.title}</h3>
-                    <p className="font-sans text-[13px] leading-relaxed text-[#0f172a]/60 mb-8">{card.desc}</p>
-                    <ArrowRight className="w-5 h-5 text-[#0f172a]/40" />
-                  </div>
-                </article>
-              ))}
+            {/* Right 3D WebGL Deck Canvas */}
+            <div className="w-full lg:w-[70%] h-[60vh] lg:h-[80vh] relative z-10">
+              <ErrorBoundary>
+                <ServicesCanvas />
+              </ErrorBoundary>
             </div>
           </div>
         </section>
