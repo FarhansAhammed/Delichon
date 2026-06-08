@@ -177,8 +177,12 @@ export default function App() {
         {/* HERO SECTION */}
         <section className="relative w-full min-h-screen flex items-center px-6 sm:px-10 pt-32 pb-10 max-w-[1400px] mx-auto">
           <div className="w-full flex flex-col lg:flex-row relative gap-8 lg:gap-0">
+            {/* Right column — space for 3D elements (empty because canvas is global now) */}
+            {/* On mobile, this spacer is rendered first at the top of the landing page. On desktop (lg), it is placed on the right side. */}
+            <div className="w-full lg:w-[45%] h-[40vh] sm:h-[45vh] lg:h-auto order-first lg:order-last"></div>
+
             {/* Left Column - Typography */}
-            <div className="w-full lg:w-[55%] flex flex-col justify-center pointer-events-auto">
+            <div className="w-full lg:w-[55%] flex flex-col justify-center pointer-events-auto order-last lg:order-first">
               <h1 className="flex flex-col mb-8 select-none">
                 <span className="font-serif text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[95px] leading-[1] text-[#0f172a] tracking-[-0.03em]">Engineered</span>
                 <span className="font-serif text-4xl xs:text-5xl sm:text-5.5xl md:text-6xl lg:text-[75px] leading-[0.8] text-[#0f172a] italic ml-2">with</span>
@@ -203,8 +207,6 @@ export default function App() {
                 <span>Scroll to explore</span>
               </div>
             </div>
-            {/* Right column — space for 3D elements (empty because canvas is global now) */}
-            <div className="w-full lg:w-[45%] h-[250px] sm:h-[350px] lg:h-auto"></div>
           </div>
         </section>
 

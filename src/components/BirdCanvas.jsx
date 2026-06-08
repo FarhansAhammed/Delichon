@@ -14,7 +14,7 @@ function DElement({ progress }) {
   const isMobile = viewport.width < 7;
   const targetScale = isMobile ? 2.2 : 4.0;
   const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
-  const targetYOffset = isMobile ? 0.70 : 0.20;
+  const targetYOffset = isMobile ? 1.5 : 0.20;
 
   const clonedScene = useMemo(() => {
     const clone = scene.clone();
@@ -26,10 +26,12 @@ function DElement({ progress }) {
           color: "#172135",
           roughness: 0.18,
           metalness: 0.8,
-          transparent: true,
+          transparent: false,
+          opacity: 1.0,
           reflectivity: 1.0,
           clearcoat: 1.0,
-          clearcoatRoughness: 0.01
+          clearcoatRoughness: 0.01,
+          depthWrite: true
         });
       }
     });
@@ -48,7 +50,10 @@ function DElement({ progress }) {
 
       groupRef.current.traverse((child) => {
         if (child.isMesh) {
-          child.material.opacity = 1.0 - exitProgress;
+          const opacity = 1.0 - exitProgress;
+          child.material.opacity = opacity;
+          child.material.transparent = opacity < 0.999;
+          child.material.depthWrite = opacity > 0.999;
         }
       });
     }
@@ -58,7 +63,7 @@ function DElement({ progress }) {
     <primitive
       ref={groupRef}
       object={clonedScene}
-      position={[targetX, isMobile ? 0.70 : 0.5, -1.0]}
+      position={[targetX, isMobile ? 1.5 : 0.5, -1.6]}
       rotation={[0.00, -0.00, 0]}
       scale={targetScale}
     />
@@ -74,9 +79,9 @@ function SymbolBackground({ progress }) {
   const color = "#5fb2ff"; // Premium sky blue
 
   const isMobile = viewport.width < 7;
-  const targetScale = isMobile ? 1.8 : 3.4;
+  const targetScale = isMobile ? 2.1 : 3.8;
   const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
-  const targetYOffset = isMobile ? 0.70 : 0.20;
+  const targetYOffset = isMobile ? 1.5 : 0.20;
 
   useFrame(() => {
     if (groupRef.current) {
@@ -86,7 +91,7 @@ function SymbolBackground({ progress }) {
       // Mirror DElement movement precisely
       groupRef.current.position.x = targetX;
       groupRef.current.position.y = targetYOffset + exitProgress * 14;
-      groupRef.current.position.z = -1.65 - exitProgress * 6;
+      groupRef.current.position.z = -2.5 - exitProgress * 6;
 
       // Handle opacity fade out with scroll
       groupRef.current.traverse((child) => {
@@ -98,7 +103,7 @@ function SymbolBackground({ progress }) {
   });
 
   return (
-    <group ref={groupRef} position={[targetX, isMobile ? 0.70 : 0.2, -1.65]} scale={targetScale}>
+    <group ref={groupRef} position={[targetX, isMobile ? 1.5 : 0.2, -2.5]} scale={targetScale}>
       {/* Outer Ring */}
       <mesh>
         <torusGeometry args={[0.85, 0.005, 16, 100]} />
@@ -161,6 +166,7 @@ function BirdModel({ scrollProgress }) {
   const birdRef = useRef();
   const { scene, animations } = useGLTF('/3d/bird_v2.glb');
   const mixer = useRef();
+  const { viewport } = useThree();
 
   // Clone scene and set up bird materials inside useMemo before rendering
   const clonedScene = useMemo(() => {
@@ -286,7 +292,7 @@ function BirdModel({ scrollProgress }) {
       const leftX = -responsiveLimitX;
 
       const heroPosX = isMobile ? 0.0 : 0.5;
-      const heroPosY = isMobile ? 0.4 : -0.2; // shift up slightly on mobile
+      const heroPosY = isMobile ? 1.1 : -0.2; // shift up slightly on mobile
       const initialScale = isMobile ? 0.75 : 1.2;
       const patrolScale = isMobile ? 0.35 : 0.55;
 
