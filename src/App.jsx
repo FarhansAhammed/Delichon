@@ -290,11 +290,11 @@ export default function App() {
               ].map((work, i) => (
                 <div 
                   key={i} 
-                  className="work-card relative md:sticky origin-top flex flex-col md:flex-row gap-6 md:gap-8 bg-white/70 backdrop-blur-xl border border-white rounded-[24px] md:rounded-[32px] p-6 md:p-12 shadow-[0_-10px_50px_rgba(0,0,0,0.03)]"
+                  className="work-card sticky origin-top flex flex-col md:flex-row gap-6 md:gap-8 bg-white/70 backdrop-blur-xl border border-white rounded-[24px] md:rounded-[32px] p-6 md:p-12 shadow-[0_-10px_50px_rgba(0,0,0,0.03)]"
                   style={{ '--stack-top': `${100 + i * 40}px`, zIndex: 10 + i }}
                 >
                   {/* Left Side: Visual */}
-                  <div className={`w-full md:w-1/2 h-[200px] sm:h-[280px] md:h-[400px] rounded-[18px] md:rounded-[24px] bg-gradient-to-br ${work.color} border border-white/40 flex items-center justify-center relative overflow-hidden`}>
+                  <div className={`w-full md:w-1/2 aspect-video rounded-[18px] md:rounded-[24px] bg-gradient-to-br ${work.color} border border-white/40 flex items-center justify-center relative overflow-hidden`}>
                      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wNSkiLz48L3N2Zz4=')] opacity-20"></div>
                      <h3 className="text-[#0f172a]/10 font-bold text-4xl sm:text-[64px] select-none">{work.title}</h3>
                   </div>
