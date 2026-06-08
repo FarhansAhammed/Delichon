@@ -226,7 +226,7 @@ function BirdModel({ scrollProgress }) {
               float wingDist = abs(transformed.x);
               
               // Deadzone for the body. The further out on the X axis, the more it bends.
-              float flapAmount = pow(max(wingDist - 0.15, 0.0), 1.2) * 1.4; 
+              float flapAmount = pow(max(wingDist - 0.15, 0.0), 1.2) * 0.70; 
               
               // Apply wing flap motion to Y (up and down)
               transformed.y += sin(uTime * 15.0) * flapAmount;
