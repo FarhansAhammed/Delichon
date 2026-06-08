@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, Environment, PerspectiveCamera, Cloud, Clouds } from '@react-three/drei';

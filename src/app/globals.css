@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@source "./src";
+@source "../**/*.{js,jsx}";
 
 @theme {
   --color-background: #f5f7fa;
@@ -7,8 +7,8 @@
   --color-accent: #38bdf8;
   --color-text: #1e293b;
   
-  --font-sans: 'Inter', sans-serif;
-  --font-serif: 'Playfair Display', serif;
+  --font-sans: var(--font-sans), sans-serif;
+  --font-serif: var(--font-serif), serif;
 }
 
 @layer base {
@@ -51,4 +51,3 @@ html.lenis, html.lenis body {
   will-change: transform, filter, opacity;
   transition: transform 0.1s linear, filter 0.1s linear, opacity 0.1s linear;
 }
-
