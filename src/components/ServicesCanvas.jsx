@@ -133,42 +133,42 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
 }
 
 function drawCardFront(ctx, title, desc, id, iconPath) {
-  // Background
+  // Background (1024x1536)
   ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, 512, 768);
+  ctx.fillRect(0, 0, 1024, 1536);
 
   // Borders
   ctx.strokeStyle = '#e2e8f0';
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 8;
   ctx.beginPath();
-  roundRect(ctx, 12, 12, 488, 744, 24);
+  roundRect(ctx, 24, 24, 976, 1488, 48);
   ctx.stroke();
 
   ctx.strokeStyle = '#f1f5f9';
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  roundRect(ctx, 22, 22, 468, 724, 18);
+  roundRect(ctx, 44, 44, 936, 1448, 36);
   ctx.stroke();
 
   // ID Number at top
   ctx.fillStyle = '#94a3b8';
-  ctx.font = 'bold 26px sans-serif';
+  ctx.font = 'bold 52px sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(id, 256, 60);
+  ctx.fillText(id, 512, 120);
 
   // Top line divider
   ctx.strokeStyle = '#e2e8f0';
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(180, 85);
-  ctx.lineTo(332, 85);
+  ctx.moveTo(360, 170);
+  ctx.lineTo(664, 170);
   ctx.stroke();
 
-  // Draw the SVG Icon
+  // Draw the SVG Icon (scaled up)
   ctx.save();
-  ctx.translate(256, 175);
-  ctx.scale(2.5, 2.5);
+  ctx.translate(512, 350);
+  ctx.scale(5.0, 5.0);
   ctx.translate(-12, -12); // Center the 24x24 path
   ctx.strokeStyle = '#38bdf8';
   ctx.lineWidth = 1.5;
@@ -179,28 +179,28 @@ function drawCardFront(ctx, title, desc, id, iconPath) {
 
   // Title
   ctx.fillStyle = '#0f172a';
-  ctx.font = 'bold 30px sans-serif';
+  ctx.font = 'bold 58px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(title, 256, 320);
+  ctx.fillText(title, 512, 640);
 
   // Description
   ctx.fillStyle = '#475569';
-  ctx.font = '500 16px sans-serif';
+  ctx.font = '500 32px sans-serif';
   ctx.textAlign = 'center';
-  wrapText(ctx, desc, 256, 385, 410, 26);
+  wrapText(ctx, desc, 512, 760, 820, 52);
 
   // Bottom divider
   ctx.strokeStyle = '#e2e8f0';
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(180, 600);
-  ctx.lineTo(332, 600);
+  ctx.moveTo(360, 1200);
+  ctx.lineTo(664, 1200);
   ctx.stroke();
 
   // ArrowRight
   ctx.save();
-  ctx.translate(256, 650);
-  ctx.scale(1.8, 1.8);
+  ctx.translate(512, 1300);
+  ctx.scale(3.6, 3.6);
   ctx.translate(-12, -12);
   ctx.strokeStyle = '#94a3b8';
   ctx.lineWidth = 2;
@@ -213,125 +213,125 @@ function drawCardFront(ctx, title, desc, id, iconPath) {
 function drawCardBack(ctx) {
   // Background
   ctx.fillStyle = '#0f172a';
-  ctx.fillRect(0, 0, 512, 768);
+  ctx.fillRect(0, 0, 1024, 1536);
 
   // Double border
   ctx.strokeStyle = '#38bdf8';
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 8;
   ctx.beginPath();
-  roundRect(ctx, 12, 12, 488, 744, 24);
+  roundRect(ctx, 24, 24, 976, 1488, 48);
   ctx.stroke();
 
   ctx.strokeStyle = '#1e293b';
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  roundRect(ctx, 22, 22, 468, 724, 18);
+  roundRect(ctx, 44, 44, 936, 1448, 36);
   ctx.stroke();
 
   // Corner stars
-  drawTinyStar(ctx, 45, 45, 5, 12, 4, '#38bdf8');
-  drawTinyStar(ctx, 467, 45, 5, 12, 4, '#38bdf8');
-  drawTinyStar(ctx, 45, 723, 5, 12, 4, '#38bdf8');
-  drawTinyStar(ctx, 467, 723, 5, 12, 4, '#38bdf8');
+  drawTinyStar(ctx, 90, 90, 10, 24, 4, '#38bdf8');
+  drawTinyStar(ctx, 934, 90, 10, 24, 4, '#38bdf8');
+  drawTinyStar(ctx, 90, 1446, 10, 24, 4, '#38bdf8');
+  drawTinyStar(ctx, 934, 1446, 10, 24, 4, '#38bdf8');
 
   ctx.save();
-  ctx.translate(256, 384);
+  ctx.translate(512, 768);
 
   // Concentric detailed rings
   ctx.strokeStyle = '#38bdf8';
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.arc(0, 0, 130, 0, Math.PI * 2);
+  ctx.arc(0, 0, 260, 0, Math.PI * 2);
   ctx.stroke();
 
   ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 6;
   ctx.beginPath();
-  ctx.arc(0, 0, 115, 0, Math.PI * 2);
+  ctx.arc(0, 0, 230, 0, Math.PI * 2);
   ctx.stroke();
 
   ctx.save();
-  ctx.setLineDash([6, 6]);
+  ctx.setLineDash([12, 12]);
   ctx.strokeStyle = '#38bdf8';
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.arc(0, 0, 95, 0, Math.PI * 2);
+  ctx.arc(0, 0, 190, 0, Math.PI * 2);
   ctx.stroke();
   ctx.restore();
 
   // Interlocked geometric diamonds
   ctx.strokeStyle = '#38bdf8';
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(0, -85);
-  ctx.lineTo(85, 0);
-  ctx.lineTo(0, 85);
-  ctx.lineTo(-85, 0);
+  ctx.moveTo(0, -170);
+  ctx.lineTo(170, 0);
+  ctx.lineTo(0, 170);
+  ctx.lineTo(-170, 0);
   ctx.closePath();
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(0, -60);
-  ctx.lineTo(60, 0);
-  ctx.lineTo(0, 60);
-  ctx.lineTo(-60, 0);
+  ctx.moveTo(0, -120);
+  ctx.lineTo(120, 0);
+  ctx.lineTo(0, 120);
+  ctx.lineTo(-120, 0);
   ctx.closePath();
   ctx.stroke();
 
   // Central Mandala
-  drawEightPointedStar(ctx, 0, 0, 45, 16, '#38bdf8');
+  drawEightPointedStar(ctx, 0, 0, 90, 32, '#38bdf8');
   ctx.fillStyle = '#ffffff';
-  drawTinyStar(ctx, 0, 0, 6, 15, 8, '#ffffff');
+  drawTinyStar(ctx, 0, 0, 12, 30, 8, '#ffffff');
 
   ctx.restore();
 }
 
 function drawBoxFront(ctx) {
   ctx.fillStyle = '#0f172a';
-  ctx.fillRect(0, 0, 512, 512);
+  ctx.fillRect(0, 0, 1024, 1024);
 
   // Borders
   ctx.strokeStyle = '#38bdf8';
-  ctx.lineWidth = 6;
-  ctx.strokeRect(20, 20, 472, 472);
+  ctx.lineWidth = 12;
+  ctx.strokeRect(40, 40, 944, 944);
 
   ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(32, 32, 448, 448);
+  ctx.lineWidth = 4;
+  ctx.strokeRect(64, 64, 896, 896);
 
   // Diamonds
-  drawDiamond(ctx, 32, 32, 8, '#38bdf8');
-  drawDiamond(ctx, 480, 32, 8, '#38bdf8');
-  drawDiamond(ctx, 32, 480, 8, '#38bdf8');
-  drawDiamond(ctx, 480, 480, 8, '#38bdf8');
+  drawDiamond(ctx, 64, 64, 16, '#38bdf8');
+  drawDiamond(ctx, 960, 64, 16, '#38bdf8');
+  drawDiamond(ctx, 64, 960, 16, '#38bdf8');
+  drawDiamond(ctx, 960, 960, 16, '#38bdf8');
 
   // Title
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 36px Georgia, serif';
+  ctx.font = 'bold 72px Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.fillText('DELICHON', 256, 185);
+  ctx.fillText('DELICHON', 512, 370);
 
-  ctx.font = 'bold 15px sans-serif';
+  ctx.font = 'bold 30px sans-serif';
   ctx.fillStyle = '#38bdf8';
-  ctx.fillText('DIGITAL ENGINEERING', 256, 235);
+  ctx.fillText('DIGITAL ENGINEERING', 512, 470);
 
   // Central emblem
   ctx.save();
-  ctx.translate(256, 355);
+  ctx.translate(512, 710);
   ctx.strokeStyle = '#38bdf8';
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.arc(0, 0, 65, 0, Math.PI * 2);
+  ctx.arc(0, 0, 130, 0, Math.PI * 2);
   ctx.stroke();
   
   ctx.strokeStyle = '#ffffff';
-  ctx.setLineDash([4, 4]);
+  ctx.setLineDash([8, 8]);
   ctx.beginPath();
-  ctx.arc(0, 0, 52, 0, Math.PI * 2);
+  ctx.arc(0, 0, 104, 0, Math.PI * 2);
   ctx.stroke();
   ctx.restore();
 
-  drawEightPointedStar(ctx, 256, 355, 45, 18, '#38bdf8');
+  drawEightPointedStar(ctx, 512, 710, 90, 36, '#38bdf8');
 }
 
 export default function ServicesCanvas() {
@@ -354,10 +354,10 @@ export default function ServicesCanvas() {
     containerRef.current.appendChild(renderer.domElement);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xf8fafc, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xf8fafc, 0.85);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.6);
     dirLight.position.set(6, 10, 8);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 2048;
@@ -368,7 +368,7 @@ export default function ServicesCanvas() {
     scene.add(dirLight);
 
     const boxLight = new THREE.PointLight(0x38bdf8, 1.5, 6);
-    boxLight.position.set(-2.2, -1.5, 1.5);
+    boxLight.position.set(-2.5, -1.6, 1.5);
     scene.add(boxLight);
 
     const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.5);
@@ -442,10 +442,17 @@ export default function ServicesCanvas() {
     });
 
     const boxFrontCanvas = document.createElement('canvas');
-    boxFrontCanvas.width = 512;
-    boxFrontCanvas.height = 512;
+    boxFrontCanvas.width = 1024;
+    boxFrontCanvas.height = 1024;
     drawBoxFront(boxFrontCanvas.getContext('2d'));
     const boxFrontTexture = new THREE.CanvasTexture(boxFrontCanvas);
+    
+    // Texture optimizations for high quality
+    boxFrontTexture.minFilter = THREE.LinearFilter;
+    boxFrontTexture.magFilter = THREE.LinearFilter;
+    boxFrontTexture.generateMipmaps = false;
+    boxFrontTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
     const boxFrontFaceMaterial = new THREE.MeshStandardMaterial({
       map: boxFrontTexture,
       roughness: 0.45,
@@ -474,41 +481,60 @@ export default function ServicesCanvas() {
     createBoxPanel(boxWidth, boxHeight, boxThickness, 0, 0, boxDepth / 2, frontMaterials);
     scene.add(boxGroup);
 
-    // --- CARDS CREATION ---
+    // --- CARDS CREATION (Scaled up from 1.12x1.68 to 1.30x1.95) ---
     const cardMeshesGroup = [];
-    const cardWidth = 1.12;
-    const cardHeight = 1.68;
-    const cardThickness = 0.022;
+    const cardWidth = 1.30;
+    const cardHeight = 1.95;
+    const cardThickness = 0.025;
 
-    // Shared Card Back Texture
+    // Shared Card Back Texture (High-res 1024x1536)
     const backCanvas = document.createElement('canvas');
-    backCanvas.width = 512;
-    backCanvas.height = 768;
+    backCanvas.width = 1024;
+    backCanvas.height = 1536;
     drawCardBack(backCanvas.getContext('2d'));
     const backTexture = new THREE.CanvasTexture(backCanvas);
-    const backMaterial = new THREE.MeshStandardMaterial({
+    
+    // Texture quality optimizations
+    backTexture.minFilter = THREE.LinearFilter;
+    backTexture.magFilter = THREE.LinearFilter;
+    backTexture.generateMipmaps = false;
+    backTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+    // Glossy clearcoat physical material
+    const backMaterial = new THREE.MeshPhysicalMaterial({
       map: backTexture,
-      roughness: 0.38,
-      metalness: 0.1
+      roughness: 0.25,
+      metalness: 0.05,
+      clearcoat: 0.4,
+      clearcoatRoughness: 0.1
     });
 
     const edgeMaterial = new THREE.MeshStandardMaterial({
-      color: 0xe2e8f0, // silver gilded edge
+      color: 0xe2e8f0, // silver edge
       roughness: 0.2,
       metalness: 0.8
     });
 
     cardData.forEach((data, index) => {
       const frontCanvas = document.createElement('canvas');
-      frontCanvas.width = 512;
-      frontCanvas.height = 768;
+      frontCanvas.width = 1024;
+      frontCanvas.height = 1536;
       drawCardFront(frontCanvas.getContext('2d'), data.title, data.desc, data.id, data.icon);
 
       const frontTexture = new THREE.CanvasTexture(frontCanvas);
-      const frontMaterial = new THREE.MeshStandardMaterial({
+      
+      // Texture quality optimizations
+      frontTexture.minFilter = THREE.LinearFilter;
+      frontTexture.magFilter = THREE.LinearFilter;
+      frontTexture.generateMipmaps = false;
+      frontTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+      const frontMaterial = new THREE.MeshPhysicalMaterial({
         map: frontTexture,
-        roughness: 0.38,
-        metalness: 0.1
+        roughness: 0.2,
+        metalness: 0.05,
+        clearcoat: 0.4,
+        clearcoatRoughness: 0.1
       });
 
       const materials = [
@@ -544,12 +570,12 @@ export default function ServicesCanvas() {
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
 
-      // Check aspect ratio or screen width
-      if (window.innerWidth < 1024) { // Mobile or small tablet Portrait view
+      if (window.innerWidth < 1024) { // Mobile portrait view
         isMobile = true;
-        // 3 rows, 2 columns layout - fits inside local container
-        const colX = [-0.75, 0.75];
-        const rowY = [1.7, 0.1, -1.5];
+        
+        // 3 rows, 2 columns layout - spaced safely for 1.30x1.95 cards
+        const colX = [-0.8, 0.8];
+        const rowY = [2.2, 0.0, -2.2];
 
         cardTargets.push({ x: colX[0], y: rowY[0] });
         cardTargets.push({ x: colX[1], y: rowY[0] });
@@ -558,36 +584,38 @@ export default function ServicesCanvas() {
         cardTargets.push({ x: colX[0], y: rowY[2] });
         cardTargets.push({ x: colX[1], y: rowY[2] });
 
-        boxGroup.position.set(0, -2.6, 0);
+        boxGroup.position.set(0, -3.2, 0);
         boxGroup.rotation.set(0.35, 0, 0);
-        boxLight.position.set(0, -2.6, 1.5);
+        boxLight.position.set(0, -3.2, 1.5);
         
-        camera.position.set(0, 0.1, 7.8);
+        // Pull camera slightly back on mobile to fit the tall layout
+        camera.position.set(0, 0.0, 8.5);
       } else { // Desktop landscape view
         isMobile = false;
-        // 2 rows, 3 columns layout - fits inside local right container
-        const colX = [-1.75, 0, 1.75];
-        const rowY = [1.0, -1.0];
+        
+        // 2 rows, 3 columns layout - spaced safely for 1.30x1.95 cards
+        const colX = [-1.8, 0, 1.8];
+        const rowY = [1.2, -1.2];
 
-        cardTargets.push({ x: colX[0], y: rowY[0] }); // Card 1 (Row 1 Col 1)
-        cardTargets.push({ x: colX[1], y: rowY[0] }); // Card 2 (Row 1 Col 2)
-        cardTargets.push({ x: colX[2], y: rowY[0] }); // Card 3 (Row 1 Col 3)
-        cardTargets.push({ x: colX[0], y: rowY[1] }); // Card 4 (Row 2 Col 1)
-        cardTargets.push({ x: colX[1], y: rowY[1] }); // Card 5 (Row 2 Col 2)
-        cardTargets.push({ x: colX[2], y: rowY[1] }); // Card 6 (Row 2 Col 3)
+        cardTargets.push({ x: colX[0], y: rowY[0] }); 
+        cardTargets.push({ x: colX[1], y: rowY[0] }); 
+        cardTargets.push({ x: colX[2], y: rowY[0] }); 
+        cardTargets.push({ x: colX[0], y: rowY[1] }); 
+        cardTargets.push({ x: colX[1], y: rowY[1] }); 
+        cardTargets.push({ x: colX[2], y: rowY[1] }); 
 
-        boxGroup.position.set(-2.2, -1.5, 0);
+        boxGroup.position.set(-2.5, -1.6, 0);
         boxGroup.rotation.set(0.2, 0.45, -0.12);
-        boxLight.position.set(-2.2, -1.5, 1.5);
+        boxLight.position.set(-2.5, -1.6, 1.5);
 
-        camera.position.set(0, 0, 6.2);
+        // Bring camera closer to make text large and razor-sharp
+        camera.position.set(0, 0, 5.8);
       }
     }
 
-    // Initialize layout first
     updateLayout();
 
-    // --- TIMELINE SETUP (Driven by ScrollTrigger of .services-scroll-track) ---
+    // --- TIMELINE SETUP ---
     let scrollTimeline;
 
     function buildTimeline() {
@@ -595,7 +623,6 @@ export default function ServicesCanvas() {
         scrollTimeline.kill();
       }
 
-      // Restack all card groups inside the box initially
       cardMeshesGroup.forEach((cardGroup, index) => {
         cardGroup.position.copy(boxGroup.position);
         cardGroup.rotation.copy(boxGroup.rotation);
@@ -615,7 +642,7 @@ export default function ServicesCanvas() {
         }
       });
 
-      // Box opens/tilts
+      // Box opens
       scrollTimeline.to(boxGroup.rotation, {
         x: boxGroup.rotation.x + 0.12,
         duration: 0.6,
@@ -624,7 +651,7 @@ export default function ServicesCanvas() {
 
       let currentVal = 0.5;
 
-      // Animate Row 1 (Cards 0, 1, 2)
+      // Animate Row 1
       for (let i = 0; i < 3; i++) {
         const cardGroup = cardMeshesGroup[i];
         const target = cardTargets[i];
@@ -637,7 +664,7 @@ export default function ServicesCanvas() {
         }, currentVal);
 
         scrollTimeline.to(cardGroup.position, {
-          y: isMobile ? 2.5 : 2.0,
+          y: isMobile ? 3.0 : 2.2,
           duration: 1.1,
           ease: "sine.out"
         }, currentVal);
@@ -650,7 +677,7 @@ export default function ServicesCanvas() {
 
         scrollTimeline.to(cardGroup.rotation, {
           x: 0,
-          y: Math.PI, // Flip face-down first
+          y: Math.PI,
           z: 0,
           duration: 2.2,
           ease: "power2.out"
@@ -666,7 +693,7 @@ export default function ServicesCanvas() {
         const cardGroup = cardMeshesGroup[i];
 
         scrollTimeline.to(cardGroup.rotation, {
-          y: 0, // Face up
+          y: 0,
           duration: 1.3,
           ease: "back.out(1.4)"
         }, currentVal + i * 0.28);
@@ -686,7 +713,7 @@ export default function ServicesCanvas() {
 
       currentVal += 2.0;
 
-      // Animate Row 2 (Cards 3, 4, 5)
+      // Animate Row 2
       for (let i = 3; i < 6; i++) {
         const cardGroup = cardMeshesGroup[i];
         const target = cardTargets[i];
@@ -699,7 +726,7 @@ export default function ServicesCanvas() {
         }, currentVal);
 
         scrollTimeline.to(cardGroup.position, {
-          y: isMobile ? 2.0 : 1.5,
+          y: isMobile ? 2.5 : 1.7,
           duration: 1.1,
           ease: "sine.out"
         }, currentVal);
@@ -728,7 +755,7 @@ export default function ServicesCanvas() {
         const cardGroup = cardMeshesGroup[i];
 
         scrollTimeline.to(cardGroup.rotation, {
-          y: 0, // Face up
+          y: 0,
           duration: 1.3,
           ease: "back.out(1.4)"
         }, currentVal + (i - 3) * 0.28);
@@ -749,7 +776,7 @@ export default function ServicesCanvas() {
 
     buildTimeline();
 
-    // --- INTERACTION / RAYCAST HOVER TILT SYSTEM ---
+    // --- INTERACTION HOVER TILT ---
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let hoveredCardMesh = null;
@@ -758,7 +785,6 @@ export default function ServicesCanvas() {
 
     const handleMouseMove = (event) => {
       const rect = renderer.domElement.getBoundingClientRect();
-      // Calculate mouse position relative to local canvas bounds
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
@@ -770,7 +796,6 @@ export default function ServicesCanvas() {
         const idx = meshesToIntersect.indexOf(mesh);
         const parentGroup = cardMeshesGroup[idx];
 
-        // Only tilt cards that have completed their flip face-up (Y rotation close to 0)
         const angleMod = Math.abs(parentGroup.rotation.y % (Math.PI * 2));
         if (angleMod < 0.25 || angleMod > (Math.PI * 2 - 0.25)) {
           hoveredCardMesh = mesh;
@@ -784,7 +809,7 @@ export default function ServicesCanvas() {
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    // --- ANIMATION / RENDER LOOP ---
+    // --- RENDER LOOP ---
     const clock = new THREE.Clock();
     let frameId;
 
@@ -793,11 +818,11 @@ export default function ServicesCanvas() {
 
       const time = clock.getElapsedTime();
 
-      // Gentle box float
+      // Box float
       boxGroup.position.y += Math.sin(time * 1.8) * 0.0012;
       boxLight.position.y = boxGroup.position.y;
 
-      // Particle systems drift
+      // Particles
       particles.rotation.y = time * 0.012;
       particles.rotation.x = time * 0.006;
 
@@ -821,7 +846,7 @@ export default function ServicesCanvas() {
       }
       posAttr.needsUpdate = true;
 
-      // Tilt cards on hover
+      // Card Tilting
       cardMeshesGroup.forEach((group) => {
         const mesh = group.children[0];
 
@@ -847,7 +872,7 @@ export default function ServicesCanvas() {
 
     tick();
 
-    // --- RESIZE EVENT HANDLER ---
+    // --- RESIZE ---
     const handleResize = () => {
       updateLayout();
       buildTimeline();
@@ -866,7 +891,6 @@ export default function ServicesCanvas() {
         scrollTimeline.kill();
       }
 
-      // Dispose of geometries & materials
       bgGeometry.dispose();
       bgMaterial.dispose();
       particleGeometry.dispose();
