@@ -253,7 +253,7 @@ function BirdModel({ scrollProgress }) {
             child.userData.shaderUniforms = shader.uniforms;
           };
           mat.needsUpdate = true;
-          mat.customProgramCacheKey = () => Math.random().toString();
+          mat.customProgramCacheKey = () => "custom_bird_shader";
         }
       }
     });
