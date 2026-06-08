@@ -125,60 +125,62 @@ export default function App() {
         </ErrorBoundary>
       </div>
 
-      {/* NAVBAR — highest priority */}
-      <nav className="fixed top-2 w-full z-50 px-4 sm:px-6 py-0 pointer-events-none">
-        <div className="max-w-[1400px] mx-auto flex justify-between items-center pointer-events-auto gap-2">
-          {/* Box 1: Logo */}
-          <div className={`transition-all duration-700 ease-in-out px-2 sm:px-4 py-0 rounded-xl border ${isScrolled ? 'bg-white/40 backdrop-blur-xl border-white/40 shadow-lg' : 'bg-transparent border-transparent'}`}>
-            <a href="/" className="flex items-center text-[#0f172a]">
-              <img src="/logo.png" alt="Delichon" className="h-14 sm:h-20 transition-all" />
-            </a>
+      {/* HEADER & NAVBAR — highest priority */}
+      <header className="fixed top-0 w-full z-50 pointer-events-none">
+        <nav className="fixed top-2 w-full px-4 sm:px-6 py-0 pointer-events-none">
+          <div className="max-w-[1400px] mx-auto flex justify-between items-center pointer-events-auto gap-2">
+            {/* Box 1: Logo */}
+            <div className={`transition-all duration-700 ease-in-out px-2 sm:px-4 py-0 rounded-xl border ${isScrolled ? 'bg-white/40 backdrop-blur-xl border-white/40 shadow-lg' : 'bg-transparent border-transparent'}`}>
+              <a href="/" className="flex items-center text-[#0f172a]">
+                <img src="/logo.png" alt="Delichon" className="h-14 sm:h-20 transition-all" />
+              </a>
+            </div>
+
+            {/* Box 2: Navigation Menu */}
+            <div className={`hidden lg:block transition-all duration-700 ease-in-out px-6 py-3 rounded-xl border ${isScrolled ? 'bg-white/40 backdrop-blur-xl border-white/40 shadow-lg' : 'bg-transparent border-transparent'}`}>
+              <ul className="flex space-x-10 font-sans text-[14px] font-medium text-[#0f172a]">
+                <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Work</li>
+                <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Services</li>
+                <li className="cursor-pointer hover:text-[#0f172a] transition-colors">About</li>
+                <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Approach</li>
+                <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Contact</li>
+              </ul>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button className={`hidden sm:flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-black/5 px-6 py-2.5 rounded-xl text-[14px] font-medium text-[#0f172a] shadow-sm hover:bg-white transition-all duration-700 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-100'}`}>
+                <span>Let's Talk</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+
+              {/* Mobile menu button */}
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="flex lg:hidden items-center justify-center bg-white/80 backdrop-blur-sm border border-black/5 p-3 rounded-xl text-[#0f172a] shadow-sm hover:bg-white transition-all pointer-events-auto"
+              >
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
           </div>
 
-          {/* Box 2: Navigation Menu */}
-          <div className={`hidden lg:block transition-all duration-700 ease-in-out px-6 py-3 rounded-xl border ${isScrolled ? 'bg-white/40 backdrop-blur-xl border-white/40 shadow-lg' : 'bg-transparent border-transparent'}`}>
-            <ul className="flex space-x-10 font-sans text-[14px] font-medium text-[#0f172a]">
-              <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Work</li>
-              <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Services</li>
-              <li className="cursor-pointer hover:text-[#0f172a] transition-colors">About</li>
-              <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Approach</li>
-              <li className="cursor-pointer hover:text-[#0f172a] transition-colors">Contact</li>
+          {/* Mobile Menu Overlay */}
+          <div className={`fixed inset-0 top-[70px] sm:top-[90px] w-full bg-white/90 backdrop-blur-2xl border-t border-black/5 transition-all duration-500 ease-in-out z-40 flex flex-col px-6 py-8 pointer-events-auto lg:hidden ${isMobileMenuOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 invisible pointer-events-none'}`}>
+            <ul className="flex flex-col space-y-6 font-sans text-[20px] font-semibold text-[#0f172a]">
+              <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Work</li>
+              <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Services</li>
+              <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>About</li>
+              <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Approach</li>
+              <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Contact</li>
             </ul>
+            <div className="mt-auto pt-8 border-t border-black/5 flex flex-col gap-4">
+              <button className="flex items-center justify-center space-x-2 bg-[#0f172a] text-white px-6 py-3.5 rounded-xl text-[15px] font-medium shadow-sm w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                <span>Let's Talk</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <button className={`hidden sm:flex items-center space-x-2 bg-white/80 backdrop-blur-sm border border-black/5 px-6 py-2.5 rounded-xl text-[14px] font-medium text-[#0f172a] shadow-sm hover:bg-white transition-all duration-700 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-100'}`}>
-              <span>Let's Talk</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </button>
-
-            {/* Mobile menu button */}
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex lg:hidden items-center justify-center bg-white/80 backdrop-blur-sm border border-black/5 p-3 rounded-xl text-[#0f172a] shadow-sm hover:bg-white transition-all pointer-events-auto"
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu Overlay */}
-        <div className={`fixed inset-0 top-[70px] sm:top-[90px] w-full bg-white/90 backdrop-blur-2xl border-t border-black/5 transition-all duration-500 ease-in-out z-40 flex flex-col px-6 py-8 pointer-events-auto lg:hidden ${isMobileMenuOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 invisible pointer-events-none'}`}>
-          <ul className="flex flex-col space-y-6 font-sans text-[20px] font-semibold text-[#0f172a]">
-            <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Work</li>
-            <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Services</li>
-            <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>About</li>
-            <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Approach</li>
-            <li className="cursor-pointer hover:text-[#38bdf8] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>Contact</li>
-          </ul>
-          <div className="mt-auto pt-8 border-t border-black/5 flex flex-col gap-4">
-            <button className="flex items-center justify-center space-x-2 bg-[#0f172a] text-white px-6 py-3.5 rounded-xl text-[15px] font-medium shadow-sm w-full" onClick={() => setIsMobileMenuOpen(false)}>
-              <span>Let's Talk</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       <main className="relative z-10">
         {/* HERO SECTION */}
@@ -196,15 +198,13 @@ export default function App() {
                 <span className="font-sans font-semibold text-6xl xs:text-7xl sm:text-8xl md:text-9xl lg:text-[115px] leading-[0.9] text-[#0f172a] tracking-[-0.04em] mt-2">Precision</span>
               </h1>
 
-              <p className="font-sans text-[15px] leading-relaxed text-[#0f172a]/70 max-w-[380px] mb-6 lg:mb-10">
-                We design and build digital systems — <br />
-                websites and applications — tailored precisely <br />
-                to the needs of each client.
+              <p className="font-sans text-[15px] leading-relaxed text-[#0f172a]/70 max-w-[420px] mb-6 lg:mb-10">
+                We are a digital product engineering partner. We build custom software development platforms, high-performance web development, and mobile application development for startups and global enterprises seeking technical excellence.
               </p>
 
               <div className="pointer-events-auto">
                 <button className="group flex items-center space-x-4 bg-[#0f172a] text-white px-8 py-4 rounded-xl font-sans text-[13px] font-medium tracking-wide hover:bg-[#1e293b] transition-all">
-                  <span>Explore Our Work</span>
+                  <span>Explore Our Portfolio</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -217,6 +217,21 @@ export default function App() {
           </div>
         </section>
 
+        {/* TRUST INDICATOR STRIP */}
+        <section className="relative w-full border-y border-[#0f172a]/5 bg-white/30 backdrop-blur-sm py-8 px-6 sm:px-10 pointer-events-auto">
+          <div className="max-w-[1400px] mx-auto flex flex-wrap justify-between items-center gap-6 text-[11px] sm:text-[12px] font-sans font-medium tracking-wider text-[#0f172a]/60 uppercase">
+            <span>Custom Software Development</span>
+            <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></div>
+            <span>Web Applications</span>
+            <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></div>
+            <span>Mobile Applications</span>
+            <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></div>
+            <span>Product Engineering</span>
+            <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></div>
+            <span>UI/UX Design</span>
+          </div>
+        </section>
+
         {/* SERVICES SECTION */}
         <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
@@ -224,10 +239,10 @@ export default function App() {
             <div className="w-full lg:w-[30%]">
               <div className="text-[#38bdf8] text-[13px] font-medium mb-6">What We Do</div>
               <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight mb-8">
-                Solutions crafted<br />to solve real problems.
+                Custom Software,<br />Web & Mobile App<br />Development Services.
               </h2>
               <p className="font-sans text-[15px] leading-relaxed text-[#0f172a]/70 mb-10">
-                From concept to deployment, we deliver scalable and secure digital solutions that drive business forward.
+                We engineer scalable, secure, and high-performance digital systems tailored to the exact requirements of startups, businesses, and enterprises worldwide.
               </p>
               <a href="#" className="flex items-center space-x-2 text-[#38bdf8] text-[14px] font-medium group">
                 <span>View all services</span>
@@ -238,11 +253,38 @@ export default function App() {
             {/* Right Cards */}
             <div className="w-full lg:w-[70%] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { title: "Web Development", desc: "High performance websites built with modern technologies, focused on speed, scalability and experience.", icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" },
-                { title: "Application Development", desc: "Custom web and mobile applications engineered to fit your workflow and scale with your business.", icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
-                { title: "Digital Experience Design", desc: "Thoughtful design that blends clarity, aesthetics and usability to create impactful digital experiences.", icon: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" }
+                { 
+                  title: "Front-End Development", 
+                  desc: "High-performance, accessible, and interactive user interfaces built with React, Next.js, and modern tools for flawless digital experiences.", 
+                  icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" 
+                },
+                { 
+                  title: "Full-Stack Development", 
+                  desc: "End-to-end web applications engineered with secure backend systems, database scalability, and robust cloud integration.", 
+                  icon: "M4 7v10c0 2 16 2 16 0V7c0-2-16-2-16 0z M4 12c0 2 16 2 16 0" 
+                },
+                { 
+                  title: "Custom Software Development", 
+                  desc: "Tailored business applications and enterprise software platforms designed to solve complex operations and scale with your growth.", 
+                  icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 5h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z" 
+                },
+                { 
+                  title: "Android & iOS Applications", 
+                  desc: "Native and cross-platform mobile app development delivering premium user experiences on both iOS and Android devices.", 
+                  icon: "M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" 
+                },
+                { 
+                  title: "UI/UX Design", 
+                  desc: "Strategic user-experience architecture and sophisticated interface designs that blend minimalism with clear customer journeys.", 
+                  icon: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" 
+                },
+                { 
+                  title: "Product Engineering", 
+                  desc: "Complete digital product engineering from conceptual blueprint to cloud architecture, deployment, and long-term maintenance.", 
+                  icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" 
+                }
               ].map((card, i) => (
-                <div key={i} className="bg-white/60 backdrop-blur-md border border-white p-6 sm:p-10 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:bg-white/80 transition-colors flex flex-col h-auto min-h-[350px] lg:h-[400px]">
+                <article key={i} className="bg-white/60 backdrop-blur-md border border-white p-6 sm:p-10 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:bg-white/80 transition-colors flex flex-col h-auto min-h-[350px] lg:h-[400px]">
                   <div className="w-10 h-10 mb-8 lg:mb-auto text-[#38bdf8]">
                     <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d={card.icon}></path></svg>
                   </div>
@@ -251,19 +293,96 @@ export default function App() {
                     <p className="font-sans text-[13px] leading-relaxed text-[#0f172a]/60 mb-8">{card.desc}</p>
                     <ArrowRight className="w-5 h-5 text-[#0f172a]/40" />
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
+        {/* ABOUT SECTION */}
+        <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto border-t border-[#0f172a]/5">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+            <div className="w-full lg:w-[35%]">
+              <div className="text-[#38bdf8] text-[13px] font-medium mb-6">Our Authority</div>
+              <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight">
+                Engineering Long-Term Technology Partnerships.
+              </h2>
+            </div>
+            <div className="w-full lg:w-[65%] flex flex-col justify-center">
+              <p className="font-sans text-[16px] leading-relaxed text-[#0f172a]/80 mb-6">
+                Based in the emerging technology hub of Kerala, India, Delichon functions as a high-fidelity digital product engineering partner for ambitious brands worldwide. We reject generic templates, focusing instead on structural integrity, clean code, and predictable system performance.
+              </p>
+              <p className="font-sans text-[15px] leading-relaxed text-[#0f172a]/60">
+                Our team is comprised of technical builders rather than marketers. We prioritize engineering quality over volume, maintaining selective partnerships to ensure that every codebase we deliver is maintainable, highly scalable, and optimized for speed.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* WHY CHOOSE US SECTION */}
+        <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto border-t border-[#0f172a]/5">
+          <div className="text-center max-w-[800px] mx-auto mb-16">
+            <div className="text-[#38bdf8] text-[13px] font-medium mb-6">Why Delichon</div>
+            <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight">
+              Why Global Brands Choose Delichon for Software Development
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+            {[
+              { title: "Precision Engineering", desc: "We write clean, modular, and extensively documented code focused on structural integrity and standard compliance." },
+              { title: "Scalable Architecture", desc: "We design cloud-ready systems and database structures that gracefully handle user growth and traffic spikes." },
+              { title: "Modern Technology Stack", desc: "We leverage industry-proven languages and frameworks (React, Next.js, Node, Three.js) to build future-proof products." },
+              { title: "User-Centered Design", desc: "Our UI/UX strategies place the target user at the core, minimizing friction to maximize conversions." },
+              { title: "Performance Optimization", desc: "Every asset and script is audited and compiled for lightning-fast speeds and search visibility." },
+              { title: "Long-Term Maintainability", desc: "We engineer codebases designed to be easily tested, extended, and maintained for years to come." }
+            ].map((item, i) => (
+              <article key={i} className="flex flex-col gap-4">
+                <div className="w-10 h-10 rounded-xl bg-[#0f172a]/5 flex items-center justify-center text-[#38bdf8] font-bold text-[15px]">
+                  0{i + 1}
+                </div>
+                <h3 className="font-sans font-bold text-[18px] text-[#0f172a]">{item.title}</h3>
+                <p className="font-sans text-[13px] leading-relaxed text-[#0f172a]/60">{item.desc}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* PROCESS SECTION */}
+        <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto border-t border-[#0f172a]/5">
+          <div className="text-center max-w-[800px] mx-auto mb-16">
+            <div className="text-[#38bdf8] text-[13px] font-medium mb-6">Our Methodology</div>
+            <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight">
+              Our Software Engineering Process
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {[
+              { num: "01", name: "Discover", desc: "We audit system requirements, perform user research, and outline technical scope." },
+              { num: "02", name: "Design", desc: "We map user journeys and create intuitive, high-fidelity UI/UX design blueprints." },
+              { num: "03", name: "Develop", desc: "We construct secure backends, clean APIs, and interactive client frontends." },
+              { num: "04", name: "Optimize", desc: "We run quality assurance, optimize asset performance, and align SEO code structures." },
+              { num: "05", name: "Scale", desc: "We deploy cloud systems, monitor active servers, and extend system functionality." }
+            ].map((step, i) => (
+              <article key={i} className="bg-white/40 backdrop-blur-md border border-white p-6 sm:p-8 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.02)] flex flex-col justify-between h-[220px]">
+                <div className="text-[#0f172a]/20 font-serif text-[32px] leading-none">{step.num}</div>
+                <div>
+                  <h3 className="font-sans font-bold text-[16px] text-[#0f172a] mb-2">{step.name}</h3>
+                  <p className="font-sans text-[12px] leading-relaxed text-[#0f172a]/60">{step.desc}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
         {/* WORK SECTION — Card Stacking Animation */}
-        <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto">
+        <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto border-t border-[#0f172a]/5">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
             <div className="w-full lg:w-[30%] lg:sticky lg:top-32 h-fit">
               <div className="text-[#38bdf8] text-[13px] font-medium mb-6">Selected Work</div>
               <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight mb-8 lg:mb-10">
-                Building things<br />that matter.
+                Selected Software Development Projects & Web Portfolio
               </h2>
               <a href="#" className="flex items-center space-x-2 text-[#38bdf8] text-[14px] font-medium group">
                 <span>View all projects</span>
@@ -295,7 +414,7 @@ export default function App() {
                   icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                 }
               ].map((work, i) => (
-                <div 
+                <article 
                   key={i} 
                   className="work-card sticky origin-top flex flex-col md:flex-row gap-6 md:gap-8 bg-white/70 backdrop-blur-xl border border-white rounded-[24px] md:rounded-[32px] p-6 md:p-12 shadow-[0_-10px_50px_rgba(0,0,0,0.03)]"
                   style={{ '--stack-top': `${100 + i * 40}px`, zIndex: 10 + i }}
@@ -323,54 +442,8 @@ export default function App() {
                       </div>
                     </button>
                   </div>
-                </div>
+                </article>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ABOUT & STATS SECTION */}
-        <section className="relative w-full py-10 lg:py-20 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto">
-          <div className="flex flex-col lg:flex-row gap-6 h-auto lg:h-[480px]">
-            {/* Left Dark Block */}
-            <div className="w-full lg:w-[60%] bg-[#0f172a] rounded-[24px] lg:rounded-[32px] p-8 sm:p-16 flex flex-col justify-center relative overflow-hidden min-h-[350px]">
-              <div className="relative z-10 w-full sm:w-[85%] lg:w-[70%]">
-                <div className="text-[#38bdf8] text-[13px] font-medium mb-6">About Delichon</div>
-                <h2 className="font-serif text-[28px] sm:text-[38px] leading-[1.2] text-white mb-6 lg:mb-8">
-                  We believe software should not only function — it should endure.
-                </h2>
-                <p className="font-sans text-[15px] leading-relaxed text-white/60 mb-8 lg:mb-10 max-w-[400px]">
-                  Delichon is built on the principle of clarity, structure and long-term reliability. We approach every project with precision and care.
-                </p>
-                <button className="flex items-center space-x-4 border border-white/20 text-white px-6 py-3 rounded-xl font-sans text-[13px] hover:bg-white/10 transition-colors w-fit">
-                  <span>Learn More</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Right Stats Block */}
-            <div className="w-full lg:w-[40%] bg-white/60 backdrop-blur-md border border-white rounded-[24px] lg:rounded-[32px] p-8 sm:p-16 grid grid-cols-2 gap-6 sm:gap-8 relative overflow-hidden min-h-[350px]">
-              <div className="flex flex-col justify-center border-b border-r border-[#0f172a]/5 pb-4 sm:pb-8 pr-4 sm:pr-8">
-                <div className="text-[#0f172a]/40 text-[13px] mb-2">Projects</div>
-                <div className="font-serif text-[36px] sm:text-[48px] text-[#0f172a] leading-none mb-2">50+</div>
-                <div className="text-[#0f172a]/60 text-[13px]">Delivered</div>
-              </div>
-              <div className="flex flex-col justify-center border-b border-[#0f172a]/5 pb-4 sm:pb-8 pl-4 sm:pl-8">
-                <div className="text-[#0f172a]/40 text-[13px] mb-2 flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-[#38bdf8] mr-2"></div>Clients</div>
-                <div className="font-serif text-[36px] sm:text-[48px] text-[#0f172a] leading-none mb-2">30+</div>
-                <div className="text-[#0f172a]/60 text-[13px]">Trusted</div>
-              </div>
-              <div className="flex flex-col justify-center border-r border-[#0f172a]/5 pt-4 sm:pt-8 pr-4 sm:pr-8">
-                <div className="text-[#0f172a]/40 text-[13px] mb-2 flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-[#38bdf8] mr-2"></div>Team</div>
-                <div className="font-serif text-[36px] sm:text-[48px] text-[#0f172a] leading-none mb-2">8</div>
-                <div className="text-[#0f172a]/60 text-[13px]">Builders</div>
-              </div>
-              <div className="flex flex-col justify-center pt-4 sm:pt-8 pl-4 sm:pl-8">
-                <div className="text-[#0f172a]/40 text-[13px] mb-2">Focus</div>
-                <div className="font-serif text-[36px] sm:text-[48px] text-[#0f172a] leading-none mb-2">100%</div>
-                <div className="text-[#0f172a]/60 text-[13px]">Quality</div>
-              </div>
             </div>
           </div>
         </section>
@@ -409,30 +482,70 @@ export default function App() {
             </div>
           </div>
         </section>
+      </main>
 
-        {/* FOOTER */}
-        <footer className="w-full py-10 px-6 sm:px-10 border-t border-[#0f172a]/10 max-w-[1400px] mx-auto pointer-events-auto">
-          <div className="flex flex-col md:flex-row gap-6 justify-between items-center text-[13px] text-[#0f172a]/50 text-center md:text-left">
-            <a href="/" className="flex items-center text-[#0f172a] hover:opacity-70 transition-opacity">
+      {/* FOOTER */}
+      <footer className="w-full py-16 px-6 sm:px-10 border-t border-[#0f172a]/10 max-w-[1400px] mx-auto pointer-events-auto bg-[#f5f7fa]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+          {/* Col 1: Logo & Trust Statement */}
+          <div className="flex flex-col gap-6">
+            <a href="/" className="flex items-center text-[#0f172a] hover:opacity-70 transition-opacity w-fit">
               <img src="/logo.png" alt="Delichon" className="h-8 grayscale opacity-80" />
             </a>
-
-            <div>&copy; 2024 Delichon Technologies. All rights reserved.</div>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
-              <div className="flex gap-6">
-                <a href="#" className="hover:text-[#0f172a] transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-[#0f172a] transition-colors">Terms of Use</a>
-              </div>
-              <div className="flex space-x-4 text-[#0f172a]">
-                <a href="#" className="hover:text-[#38bdf8]"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg></a>
-                <a href="#" className="hover:text-[#38bdf8]"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" /></svg></a>
-                <a href="#" className="hover:text-[#38bdf8]"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg></a>
-              </div>
-            </div>
+            <p className="font-sans text-[13px] leading-relaxed text-[#0f172a]/60">
+              We engineer digital systems that endure, blending structural clarity with technical craftsmanship.
+            </p>
+            <p className="font-sans text-[12px] text-[#0f172a]/40">
+              Based in Kerala, India. Serving clients worldwide.
+            </p>
           </div>
-        </footer>
-      </main>
+          
+          {/* Col 2: Services */}
+          <div>
+            <h4 className="font-sans font-bold text-[14px] text-[#0f172a] mb-6 uppercase tracking-wider">Services</h4>
+            <ul className="flex flex-col space-y-4 font-sans text-[13px] text-[#0f172a]/60">
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Custom Software Development</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Web Application Development</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Mobile App Development</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Digital Product Engineering</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">UI/UX Design Services</a></li>
+            </ul>
+          </div>
+          
+          {/* Col 3: Company */}
+          <div>
+            <h4 className="font-sans font-bold text-[14px] text-[#0f172a] mb-6 uppercase tracking-wider">Company</h4>
+            <ul className="flex flex-col space-y-4 font-sans text-[13px] text-[#0f172a]/60">
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">About Our Agency</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Our Portfolio</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Why Choose Us</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Engineering Process</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Contact Us</a></li>
+            </ul>
+          </div>
+          
+          {/* Col 4: Resources */}
+          <div>
+            <h4 className="font-sans font-bold text-[14px] text-[#0f172a] mb-6 uppercase tracking-wider">Resources</h4>
+            <ul className="flex flex-col space-y-4 font-sans text-[13px] text-[#0f172a]/60 mb-6">
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Technology Hub Blog</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Case Studies Portfolio</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-[#0f172a] transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        {/* Bottom Bar */}
+        <div className="flex flex-col sm:flex-row justify-between items-center pt-8 border-t border-[#0f172a]/5 text-[12px] text-[#0f172a]/40 gap-4">
+          <div>&copy; {new Date().getFullYear()} Delichon Technologies. All rights reserved.</div>
+          <div className="flex space-x-6">
+            <a href="#" className="hover:text-[#0f172a] transition-colors">LinkedIn</a>
+            <a href="#" className="hover:text-[#0f172a] transition-colors">Twitter</a>
+            <a href="#" className="hover:text-[#0f172a] transition-colors">GitHub</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
