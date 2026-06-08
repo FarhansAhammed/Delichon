@@ -41,6 +41,63 @@ class ErrorBoundary extends Component {
   }
 }
 
+const services = [
+  { 
+    title: "Front-End Development", 
+    desc: "High-performance, accessible, and interactive user interfaces built with React, Next.js, and modern tools for flawless digital experiences.", 
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+      </svg>
+    )
+  },
+  { 
+    title: "Full-Stack Development", 
+    desc: "End-to-end web applications engineered with secure backend systems, database scalability, and robust cloud integration.", 
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2 16 2 16 0V7c0-2-16-2-16 0z M4 12c0 2 16 2 16 0"></path>
+      </svg>
+    )
+  },
+  { 
+    title: "Custom Software Development", 
+    desc: "Tailored business applications and enterprise software platforms designed to solve complex operations and scale with your growth.", 
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 5h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z"></path>
+      </svg>
+    )
+  },
+  { 
+    title: "Android & iOS Applications", 
+    desc: "Native and cross-platform mobile app development delivering premium user experiences on both iOS and Android devices.", 
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+      </svg>
+    )
+  },
+  { 
+    title: "UI/UX Design", 
+    desc: "Strategic user-experience architecture and sophisticated interface designs that blend minimalism with clear customer journeys.", 
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+      </svg>
+    )
+  },
+  { 
+    title: "Product Engineering", 
+    desc: "Complete digital product engineering from conceptual blueprint to cloud architecture, deployment, and long-term maintenance.", 
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+      </svg>
+    )
+  }
+];
+
 export default function App() {
   const containerRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -117,6 +174,164 @@ export default function App() {
 
     window.addEventListener('scroll', handleCardStack);
     return () => window.removeEventListener('scroll', handleCardStack);
+  }, []);
+
+  // 3D CSS HTML Cards scroll flight timeline
+  useEffect(() => {
+    const cards = document.querySelectorAll('.card3d-wrapper');
+    const cardInners = document.querySelectorAll('.card3d-inner');
+    const boxAnchor = document.querySelector('.services-box-anchor');
+
+    if (!boxAnchor || cards.length === 0) return;
+
+    let tl;
+
+    const initTimeline = () => {
+      const boxRect = boxAnchor.getBoundingClientRect();
+      
+      if (tl) tl.kill();
+
+      tl = gsap.timeline({
+        scrollTrigger: {
+          id: "services-trigger",
+          trigger: ".services-scroll-track",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.4,
+          invalidateOnRefresh: true,
+        }
+      });
+
+      cardInners.forEach((cardInner, index) => {
+        const cardWrapper = cards[index];
+        const cardRect = cardWrapper.getBoundingClientRect();
+
+        // Calculate offset from box anchor to card grid cell center
+        const startX = (boxRect.left + boxRect.width / 2) - (cardRect.left + cardRect.width / 2);
+        const startY = (boxRect.top + boxRect.height / 2) - (cardRect.top + cardRect.height / 2);
+
+        // Set initial state inside WebGL box
+        gsap.set(cardInner, {
+          x: startX,
+          y: startY,
+          z: -300,
+          scale: 0.15,
+          rotationY: 180,
+          rotationX: 15,
+          rotationZ: -10,
+          opacity: 0.2
+        });
+
+        // Flight timeline (staggered)
+        const flyStart = index < 3 ? 0.1 + index * 0.4 : 1.8 + (index - 3) * 0.4;
+        
+        // Translate & flip to normal grid position
+        tl.to(cardInner, {
+          x: 0,
+          z: 0,
+          scale: 1,
+          opacity: 1,
+          duration: 2.2,
+          ease: "power2.inOut"
+        }, flyStart);
+
+        // Height curve Y arcing
+        const peakY = index < 3 ? -180 : -100;
+        tl.to(cardInner, {
+          y: startY + peakY,
+          duration: 1.1,
+          ease: "sine.out"
+        }, flyStart);
+
+        tl.to(cardInner, {
+          y: 0,
+          duration: 1.1,
+          ease: "sine.in"
+        }, flyStart + 1.1);
+
+        // Rotation flip (180 -> 0)
+        tl.to(cardInner, {
+          rotationY: 0,
+          rotationX: 0,
+          rotationZ: 0,
+          duration: 2.2,
+          ease: "power2.out"
+        }, flyStart);
+      });
+    };
+
+    const timer = setTimeout(initTimeline, 500);
+
+    const handleResize = () => {
+      clearTimeout(timer);
+      initTimeline();
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+      if (tl) tl.kill();
+    };
+  }, []);
+
+  // 3D Card Hover Tilt interaction
+  useEffect(() => {
+    const cards = document.querySelectorAll('.card3d-wrapper');
+    const listeners = [];
+
+    cards.forEach((card, index) => {
+      const inner = card.querySelector('.card3d-inner');
+      if (!inner) return;
+
+      const handleMouseMove = (e) => {
+        // Prevent hover tilt unless scroll timeline has completed (cards are fully landed)
+        const trigger = ScrollTrigger.getById("services-trigger");
+        if (!trigger || trigger.progress < 0.95) return;
+
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const xc = rect.width / 2;
+        const yc = rect.height / 2;
+        const tiltX = (yc - y) / 12; // Max 10 deg
+        const tiltY = (x - xc) / 12;
+
+        gsap.to(inner, {
+          rotationX: tiltX,
+          rotationY: tiltY,
+          z: 25,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      };
+
+      const handleMouseLeave = () => {
+        const trigger = ScrollTrigger.getById("services-trigger");
+        // Reset rotation if not fully landed, or smoothly interpolate to 0
+        const targetRotY = (trigger && trigger.progress < 0.95) ? 180 : 0;
+        gsap.to(inner, {
+          rotationX: 0,
+          rotationY: targetRotY,
+          z: 0,
+          duration: 0.5,
+          ease: "power2.out"
+        });
+      };
+
+      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseleave', handleMouseLeave);
+      listeners.push({ card, handleMouseMove, handleMouseLeave });
+    });
+
+    return () => {
+      listeners.forEach(({ card, handleMouseMove, handleMouseLeave }) => {
+        card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    };
   }, []);
 
   return (
@@ -255,11 +470,61 @@ export default function App() {
               </a>
             </div>
 
-            {/* Right 3D WebGL Deck Canvas */}
-            <div className="w-full lg:w-[70%] h-[60vh] lg:h-[80vh] relative z-10">
-              <ErrorBoundary>
-                <ServicesCanvas />
-              </ErrorBoundary>
+            {/* Right Hybrid 3D Column */}
+            <div className="w-full lg:w-[70%] h-[65vh] lg:h-[85vh] relative z-10 flex items-center justify-center">
+              {/* Background 3D Canvas */}
+              <div className="absolute inset-0 z-0 pointer-events-none">
+                <ErrorBoundary>
+                  <ServicesCanvas />
+                </ErrorBoundary>
+              </div>
+
+              {/* Invisible Box Anchor */}
+              <div className="services-box-anchor absolute w-2 h-2 pointer-events-none opacity-0 left-[50%] top-[80%] lg:left-[18%] lg:top-[75%]" />
+
+              {/* DOM Cards Grid */}
+              <div className="services-cards-grid relative w-full max-w-[820px] grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 z-10 pointer-events-none" style={{ perspective: '1500px' }}>
+                {services.map((card, i) => (
+                  <div key={i} className="card3d-wrapper aspect-[3/3.8] w-full pointer-events-auto cursor-pointer">
+                    <div className="card3d-inner w-full h-full relative" style={{ transformStyle: 'preserve-3d' }}>
+                      
+                      {/* Back Face */}
+                      <div className="card3d-back absolute inset-0 w-full h-full rounded-[20px] bg-[#0f172a] border border-[#38bdf8]/30 flex flex-col items-center justify-center p-3 sm:p-4 shadow-xl" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                        <svg viewBox="0 0 200 300" className="w-full h-full text-[#38bdf8] opacity-75" fill="none" stroke="currentColor" strokeWidth="1">
+                          <rect x="8" y="8" width="184" height="284" rx="12" strokeWidth="1.5" strokeDasharray="3 3" />
+                          <rect x="14" y="14" width="172" height="272" rx="10" strokeWidth="0.5" />
+                          <path d="M 14 24 L 24 14 M 176 14 L 186 24 M 14 276 L 24 286 M 176 286 L 186 276" strokeWidth="0.75" />
+                          <g transform="translate(100, 150)">
+                            <circle r="55" strokeWidth="0.5" strokeDasharray="4 2" />
+                            <circle r="45" strokeWidth="0.75" />
+                            <circle r="35" strokeWidth="0.5" />
+                            <path d="M -45 0 L 45 0 M 0 -45 L 0 45" strokeWidth="0.5" opacity="0.3" />
+                            <path d="M -32 -32 L 32 32 M -32 32 L 32 -32" strokeWidth="0.5" opacity="0.3" />
+                            <path d="M 0 -25 L 5 -8 L 25 0 L 5 8 L 0 25 L -5 8 L -25 0 L -5 -8 Z" fill="currentColor" />
+                            <circle r="3" fill="#ffffff" />
+                          </g>
+                        </svg>
+                      </div>
+
+                      {/* Front Face */}
+                      <div className="card3d-front absolute inset-0 w-full h-full rounded-[20px] bg-white/60 backdrop-blur-md border border-white p-4 sm:p-6 flex flex-col justify-between shadow-lg hover:bg-white/80 hover:border-[#38bdf8]/40 transition-colors" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 text-[#38bdf8] flex items-center justify-center bg-white/80 rounded-xl border border-black/5 shadow-sm">
+                          {card.icon}
+                        </div>
+                        <div className="flex flex-col gap-1 sm:gap-2">
+                          <h3 className="font-sans font-bold text-[12px] sm:text-[14px] lg:text-[16px] text-[#0f172a] pr-2 leading-tight">{card.title}</h3>
+                          <p className="font-sans text-[10px] sm:text-[11px] lg:text-[12px] leading-relaxed text-[#0f172a]/60">{card.desc}</p>
+                          <div className="flex items-center text-[#38bdf8] text-[10px] sm:text-[11px] lg:text-[12px] font-semibold gap-1 group/btn mt-1">
+                            <span>Learn more</span>
+                            <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
