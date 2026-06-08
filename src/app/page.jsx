@@ -103,37 +103,67 @@ const differentiators = [
     title: "Precision Engineering",
     label: "Precision Eng.",
     desc: "We write clean, modular, and extensively documented code focused on structural integrity and standard compliance.",
-    image: "/why/precision.png"
+    image: "/why/precision.png",
+    x: -250,
+    y: -190,
+    w: "w-[150px]",
+    h: "h-[110px]",
+    tilt: -12
   },
   {
     title: "Scalable Architecture",
     label: "Scalable Arch.",
     desc: "We design cloud-ready systems and database structures that gracefully handle user growth and traffic spikes.",
-    image: "/why/scalable.png"
+    image: "/why/scalable.png",
+    x: 20,
+    y: -260,
+    w: "w-[120px]",
+    h: "h-[140px]",
+    tilt: 6
   },
   {
     title: "Modern Technology Stack",
     label: "Modern Stack",
     desc: "We leverage industry-proven languages and frameworks (React, Next.js, Node, Three.js) to build future-proof products.",
-    image: "/why/techstack.png"
+    image: "/why/techstack.png",
+    x: 270,
+    y: -190,
+    w: "w-[160px]",
+    h: "h-[115px]",
+    tilt: -8
   },
   {
     title: "User-Centered Design",
     label: "UX Design",
     desc: "Our UI/UX strategies place the target user at the core, minimizing friction to maximize conversions.",
-    image: "/why/uxdesign.png"
+    image: "/why/uxdesign.png",
+    x: 290,
+    y: 110,
+    w: "w-[125px]",
+    h: "h-[155px]",
+    tilt: 10
   },
   {
     title: "Performance Optimization",
     label: "Performance",
     desc: "Every asset and script is audited and compiled for lightning-fast speeds and search visibility.",
-    image: "/why/performance.png"
+    image: "/why/performance.png",
+    x: -20,
+    y: 250,
+    w: "w-[145px]",
+    h: "h-[110px]",
+    tilt: -6
   },
   {
     title: "Long-Term Maintainability",
     label: "Maintainability",
     desc: "We engineer codebases designed to be easily tested, extended, and maintained for years to come.",
-    image: "/why/maintainability.png"
+    image: "/why/maintainability.png",
+    x: -290,
+    y: 90,
+    w: "w-[160px]",
+    h: "h-[120px]",
+    tilt: 12
   }
 ];
 
@@ -393,34 +423,36 @@ export default function App() {
 
     orbitWrappers.forEach((wrapper, index) => {
       const satellite = satellites[index];
-      const targetAngle = -60 + index * 60;
+      const card = differentiators[index];
 
-      // Set initial orbital entry states:
-      // Orbit wrapper starts rotated far left (-180deg) and scaled down
-      // Satellite starts rotated 180deg to stay upright relative to the wrapper
+      // Initial state:
+      // Wrapper is translated off-screen to the left (-1100px) and rotated -120deg
+      // Satellite is rotated opposite (+120deg) to remain upright
       gsap.set(wrapper, {
-        rotation: -180,
-        scale: 0.1,
+        x: -1100,
+        rotation: -120,
+        scale: 0.3,
         opacity: 0
       });
       gsap.set(satellite, {
-        rotation: 180
+        rotation: 120
       });
 
       // Staggered timeline entry
-      const startOffset = index * 0.2;
+      const startOffset = index * 0.25;
       
       tl.to(wrapper, {
-        rotation: targetAngle,
+        x: 0,
+        rotation: 0,
         scale: 1,
         opacity: 1,
-        duration: 1.5,
+        duration: 1.8,
         ease: "power2.out"
       }, startOffset);
 
       tl.to(satellite, {
-        rotation: -targetAngle,
-        duration: 1.5,
+        rotation: card.tilt,
+        duration: 1.8,
         ease: "power2.out"
       }, startOffset);
     });
@@ -667,21 +699,21 @@ export default function App() {
                 </div>
 
                 {/* Central Glassmorphic Details Card */}
-                <div className="absolute w-[260px] h-[260px] rounded-full bg-white/70 backdrop-blur-xl border border-white flex flex-col justify-center items-center p-8 text-center shadow-[0_15px_40px_rgba(0,0,0,0.03)] z-20 transition-all duration-300">
+                {/* Central Details Card - rendered directly on the background like ss.jpg */}
+                <div className="absolute text-center max-w-[320px] sm:max-w-[360px] z-10 pointer-events-none select-none px-4 flex flex-col justify-center items-center">
                   <div className="text-[#38bdf8] text-[10px] font-bold uppercase tracking-widest mb-3">
                     {activeDiffIndex !== null ? `0${activeDiffIndex + 1} / 06` : "Core Standards"}
                   </div>
-                  <h3 className="font-serif text-[18px] lg:text-[20px] leading-snug text-[#0f172a] font-bold mb-3 transition-all duration-300">
-                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].title : "Engineered for Scale"}
+                  <h3 className="font-serif text-[18px] lg:text-[22px] leading-tight text-[#0f172a] font-bold mb-3 transition-all duration-300">
+                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].title : "Why Global Brands Choose Delichon"}
                   </h3>
                   <p className="font-sans text-[11px] lg:text-[12.5px] leading-relaxed text-[#0f172a]/60 min-h-[66px] transition-all duration-300">
-                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].desc : "Hover over the outer circles to explore our key differentiators and software development standards."}
+                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].desc : "Hover over the outer cards to explore our key differentiators and software development standards."}
                   </p>
                 </div>
 
                 {/* Satellite Nodes */}
                 {differentiators.map((item, i) => {
-                  const finalAngle = -60 + i * 60;
                   return (
                     <div
                       key={i}
@@ -695,24 +727,25 @@ export default function App() {
                         style={{
                           left: '340px',
                           top: '340px',
-                          width: '130px',
-                          height: '150px',
-                          transform: `translate(-50%, -50%) translate(${260}px, 0px)`,
+                          width: '180px',
+                          height: '200px',
+                          // Scattered offsets from data
+                          transform: `translate(-50%, -50%) translate(${item.x}px, ${item.y}px)`,
                           transformOrigin: 'center center',
                         }}
                         onMouseEnter={() => setActiveDiffIndex(i)}
                         onMouseLeave={() => setActiveDiffIndex(null)}
                       >
-                        {/* Frame Thumbnail */}
-                        <div className="w-[84px] h-[84px] rounded-full border-[3px] border-white bg-white shadow-[0_8px_25px_rgba(0,0,0,0.05)] overflow-hidden group-hover:border-[#38bdf8] group-hover:shadow-[0_12px_30px_rgba(56,189,248,0.15)] transition-all duration-300">
+                        {/* Rounded Rectangle Card - consistent with ss.jpg */}
+                        <div className={`${item.w} ${item.h} rounded-[20px] border border-black/5 bg-white shadow-[0_8px_25px_rgba(0,0,0,0.04)] overflow-hidden group-hover:border-[#38bdf8]/40 group-hover:shadow-[0_12px_30px_rgba(56,189,248,0.15)] transition-all duration-300`}>
                           <img
                             src={item.image}
                             alt={item.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                         </div>
-                        {/* Upright Label */}
-                        <span className="mt-2 text-center font-sans font-bold text-[11px] text-[#0f172a]/70 group-hover:text-[#38bdf8] transition-colors leading-tight px-1 max-w-[110px] uppercase tracking-wider select-none">
+                        {/* Label */}
+                        <span className="mt-2 text-center font-sans font-bold text-[10px] sm:text-[11px] text-[#0f172a]/70 group-hover:text-[#38bdf8] transition-colors leading-tight px-1 max-w-[120px] uppercase tracking-wider select-none">
                           {item.label}
                         </span>
                       </div>
