@@ -12,7 +12,7 @@ function DElement({ progress }) {
   const { viewport } = useThree();
 
   const isMobile = viewport.width < 7;
-  const targetScale = isMobile ? 2.2 : 4.0;
+  const targetScale = isMobile ? 1.8 : 4.0;
   const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
   const targetYOffset = isMobile ? 1.5 : 0.20;
 
@@ -79,7 +79,7 @@ function SymbolBackground({ progress }) {
   const color = "#5fb2ff"; // Premium sky blue
 
   const isMobile = viewport.width < 7;
-  const targetScale = isMobile ? 2.1 : 3.8;
+  const targetScale = isMobile ? 1.7 : 3.8;
   const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
   const targetYOffset = isMobile ? 1.5 : 0.20;
 
@@ -291,10 +291,10 @@ function BirdModel({ scrollProgress }) {
       const rightX = responsiveLimitX;
       const leftX = -responsiveLimitX;
 
-      const heroPosX = isMobile ? 0.0 : 0.5;
+      const heroPosX = isMobile ? -0.35 : 0.5;
       const heroPosY = isMobile ? 1.1 : -0.2; // shift up slightly on mobile
-      const initialScale = isMobile ? 0.75 : 1.2;
-      const patrolScale = isMobile ? 0.35 : 0.55;
+      const initialScale = isMobile ? 0.60 : 1.2;
+      const patrolScale = isMobile ? 0.28 : 0.55;
 
       // Stage Calculation: 4 transitions based on the image trail
       const stage = Math.min(Math.floor(p * 4), 3);
