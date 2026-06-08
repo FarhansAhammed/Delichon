@@ -210,16 +210,16 @@ export default function App() {
         const startX = (boxRect.left + boxRect.width / 2) - (cardRect.left + cardRect.width / 2);
         const startY = (boxRect.top + boxRect.height / 2) - (cardRect.top + cardRect.height / 2);
 
-        // Set initial state inside WebGL box
+        // Set initial state — fully hidden behind the WebGL box
         gsap.set(cardInner, {
           x: startX,
           y: startY,
           z: -300,
-          scale: 0.15,
+          scale: 0,
           rotationY: 180,
           rotationX: 15,
           rotationZ: -10,
-          opacity: 0.2
+          opacity: 0
         });
 
         // Flight timeline (staggered)
@@ -452,9 +452,8 @@ export default function App() {
           </div>
         </section>
 
-        {/* SERVICES SECTION */}
         <section className="services-scroll-track relative w-full h-[300vh] pointer-events-auto">
-          <div className="sticky top-0 w-full h-screen flex flex-col lg:flex-row max-w-[1400px] mx-auto px-6 sm:px-10 py-10 lg:py-20 gap-12 lg:gap-16 items-center overflow-hidden">
+          <div className="sticky top-0 w-full h-screen flex flex-col lg:flex-row max-w-[1400px] mx-auto px-6 sm:px-10 pt-24 lg:pt-28 pb-6 gap-8 lg:gap-12 items-center overflow-hidden">
             {/* Left Content */}
             <div className="w-full lg:w-[30%] pointer-events-auto z-20">
               <div className="text-[#38bdf8] text-[13px] font-medium mb-6">What We Do</div>
@@ -479,8 +478,8 @@ export default function App() {
                 </ErrorBoundary>
               </div>
 
-              {/* Invisible Box Anchor */}
-              <div className="services-box-anchor absolute w-2 h-2 pointer-events-none opacity-0 left-[50%] top-[80%] lg:left-[18%] lg:top-[75%]" />
+              {/* Invisible Box Anchor — aligned to 3D box screen position */}
+              <div className="services-box-anchor absolute w-2 h-2 pointer-events-none opacity-0 left-[50%] top-[70%] lg:left-[20%] lg:top-[65%]" />
 
               {/* DOM Cards Grid */}
               <div className="services-cards-grid relative w-full max-w-[820px] grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 z-10 pointer-events-none" style={{ perspective: '1500px' }}>
@@ -507,17 +506,15 @@ export default function App() {
                       </div>
 
                       {/* Front Face */}
-                      <div className="card3d-front absolute inset-0 w-full h-full rounded-[20px] bg-white/60 backdrop-blur-md border border-white p-4 sm:p-6 flex flex-col justify-between shadow-lg hover:bg-white/80 hover:border-[#38bdf8]/40 transition-colors" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 text-[#38bdf8] flex items-center justify-center bg-white/80 rounded-xl border border-black/5 shadow-sm">
+                      <div className="card3d-front absolute inset-0 w-full h-full rounded-[20px] bg-white/60 backdrop-blur-md border border-white p-4 sm:p-5 flex flex-col gap-3 shadow-lg hover:bg-white/80 hover:border-[#38bdf8]/40 transition-colors" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 text-[#38bdf8] flex items-center justify-center bg-white/80 rounded-lg border border-black/5 shadow-sm shrink-0">
                           {card.icon}
                         </div>
-                        <div className="flex flex-col gap-1 sm:gap-2">
-                          <h3 className="font-sans font-bold text-[12px] sm:text-[14px] lg:text-[16px] text-[#0f172a] pr-2 leading-tight">{card.title}</h3>
-                          <p className="font-sans text-[10px] sm:text-[11px] lg:text-[12px] leading-relaxed text-[#0f172a]/60">{card.desc}</p>
-                          <div className="flex items-center text-[#38bdf8] text-[10px] sm:text-[11px] lg:text-[12px] font-semibold gap-1 group/btn mt-1">
-                            <span>Learn more</span>
-                            <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                          </div>
+                        <h3 className="font-sans font-bold text-[12px] sm:text-[14px] lg:text-[15px] text-[#0f172a] pr-2 leading-tight">{card.title}</h3>
+                        <p className="font-sans text-[10px] sm:text-[11px] lg:text-[12px] leading-relaxed text-[#0f172a]/60">{card.desc}</p>
+                        <div className="flex items-center text-[#38bdf8] text-[10px] sm:text-[11px] lg:text-[12px] font-semibold gap-1 group/btn">
+                          <span>Learn more</span>
+                          <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                         </div>
                       </div>
 

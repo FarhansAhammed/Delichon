@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 function drawBoxFront(ctx) {
-  ctx.fillStyle = '#0f172a';
+  ctx.fillStyle = '#f8fafc'; // Crisp white/slate-50
   ctx.fillRect(0, 0, 1024, 1024);
 
   // Borders
@@ -12,7 +12,7 @@ function drawBoxFront(ctx) {
   ctx.lineWidth = 12;
   ctx.strokeRect(40, 40, 944, 944);
 
-  ctx.strokeStyle = '#ffffff';
+  ctx.strokeStyle = '#0f172a'; // Dark slate border
   ctx.lineWidth = 4;
   ctx.strokeRect(64, 64, 896, 896);
 
@@ -34,14 +34,14 @@ function drawBoxFront(ctx) {
   ctx.closePath(); ctx.fillStyle = '#38bdf8'; ctx.fill();
 
   // Title
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 72px Georgia, serif';
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 58px Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.fillText('DELICHON', 512, 370);
+  ctx.fillText('What we do at', 512, 380);
 
-  ctx.font = 'bold 30px sans-serif';
-  ctx.fillStyle = '#38bdf8';
-  ctx.fillText('DIGITAL ENGINEERING', 512, 470);
+  ctx.font = 'bold 74px sans-serif';
+  ctx.fillStyle = '#0f172a';
+  ctx.fillText('"DELICHON"', 512, 480);
 
   // Central emblem
   ctx.save();
@@ -52,7 +52,7 @@ function drawBoxFront(ctx) {
   ctx.arc(0, 0, 130, 0, Math.PI * 2);
   ctx.stroke();
   
-  ctx.strokeStyle = '#ffffff';
+  ctx.strokeStyle = '#0f172a';
   ctx.setLineDash([8, 8]);
   ctx.beginPath();
   ctx.arc(0, 0, 104, 0, Math.PI * 2);
@@ -172,9 +172,9 @@ export default function ServicesCanvas() {
     const boxDepth = 0.54;
 
     const boxBodyMaterial = new THREE.MeshStandardMaterial({
-      color: 0x0f172a, // dark slate
-      roughness: 0.6,
-      metalness: 0.1
+      color: 0xe2e8f0, // light slate/white
+      roughness: 0.5,
+      metalness: 0.05
     });
 
     const boxFrontCanvas = document.createElement('canvas');
@@ -226,15 +226,15 @@ export default function ServicesCanvas() {
       camera.updateProjectionMatrix();
 
       if (window.innerWidth < 1024) { // Mobile portrait view
-        boxGroup.position.set(0, -3.2, 0);
-        boxGroup.rotation.set(0.35, 0, 0);
-        boxLight.position.set(0, -3.2, 1.5);
-        camera.position.set(0, 0.0, 8.5);
+        boxGroup.position.set(0, -2.0, 0);
+        boxGroup.rotation.set(0.25, 0, 0);
+        boxLight.position.set(0, -2.0, 1.5);
+        camera.position.set(0, 0.0, 7.5);
       } else { // Desktop landscape view
-        boxGroup.position.set(-2.5, -1.6, 0);
-        boxGroup.rotation.set(0.2, 0.45, -0.12);
-        boxLight.position.set(-2.5, -1.6, 1.5);
-        camera.position.set(0, 0, 5.8);
+        boxGroup.position.set(-2.2, -0.8, 0);
+        boxGroup.rotation.set(0.15, 0.35, -0.08);
+        boxLight.position.set(-2.2, -0.8, 1.5);
+        camera.position.set(0, 0.2, 6.5);
       }
     }
 
