@@ -98,10 +98,50 @@ const services = [
   }
 ];
 
+const differentiators = [
+  {
+    title: "Precision Engineering",
+    label: "Precision Eng.",
+    desc: "We write clean, modular, and extensively documented code focused on structural integrity and standard compliance.",
+    image: "/why/precision.png"
+  },
+  {
+    title: "Scalable Architecture",
+    label: "Scalable Arch.",
+    desc: "We design cloud-ready systems and database structures that gracefully handle user growth and traffic spikes.",
+    image: "/why/scalable.png"
+  },
+  {
+    title: "Modern Technology Stack",
+    label: "Modern Stack",
+    desc: "We leverage industry-proven languages and frameworks (React, Next.js, Node, Three.js) to build future-proof products.",
+    image: "/why/techstack.png"
+  },
+  {
+    title: "User-Centered Design",
+    label: "UX Design",
+    desc: "Our UI/UX strategies place the target user at the core, minimizing friction to maximize conversions.",
+    image: "/why/uxdesign.png"
+  },
+  {
+    title: "Performance Optimization",
+    label: "Performance",
+    desc: "Every asset and script is audited and compiled for lightning-fast speeds and search visibility.",
+    image: "/why/performance.png"
+  },
+  {
+    title: "Long-Term Maintainability",
+    label: "Maintainability",
+    desc: "We engineer codebases designed to be easily tested, extended, and maintained for years to come.",
+    image: "/why/maintainability.png"
+  }
+];
+
 export default function App() {
   const containerRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDiffIndex, setActiveDiffIndex] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -334,6 +374,62 @@ export default function App() {
     };
   }, []);
 
+  // Why Choose Us Orbital animation
+  useEffect(() => {
+    const orbitWrappers = document.querySelectorAll('.why-orbit-wrapper');
+    const satellites = document.querySelectorAll('.why-satellite');
+    
+    if (orbitWrappers.length === 0) return;
+
+    let tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".why-scroll-track",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1.2,
+        invalidateOnRefresh: true,
+      }
+    });
+
+    orbitWrappers.forEach((wrapper, index) => {
+      const satellite = satellites[index];
+      const targetAngle = -60 + index * 60;
+
+      // Set initial orbital entry states:
+      // Orbit wrapper starts rotated far left (-180deg) and scaled down
+      // Satellite starts rotated 180deg to stay upright relative to the wrapper
+      gsap.set(wrapper, {
+        rotation: -180,
+        scale: 0.1,
+        opacity: 0
+      });
+      gsap.set(satellite, {
+        rotation: 180
+      });
+
+      // Staggered timeline entry
+      const startOffset = index * 0.2;
+      
+      tl.to(wrapper, {
+        rotation: targetAngle,
+        scale: 1,
+        opacity: 1,
+        duration: 1.5,
+        ease: "power2.out"
+      }, startOffset);
+
+      tl.to(satellite, {
+        rotation: -targetAngle,
+        duration: 1.5,
+        ease: "power2.out"
+      }, startOffset);
+    });
+
+    return () => {
+      if (tl) tl.kill();
+    };
+  }, []);
+
   return (
     <div ref={containerRef} className="relative w-full bg-[#f5f7fa] text-[#0f172a] font-sans selection:bg-[#38bdf8]/30">
 
@@ -546,32 +642,87 @@ export default function App() {
           </div>
         </section>
 
-        {/* WHY CHOOSE US SECTION */}
-        <section className="relative w-full py-20 lg:py-32 px-6 sm:px-10 max-w-[1400px] mx-auto pointer-events-auto border-t border-[#0f172a]/5">
-          <div className="text-center max-w-[800px] mx-auto mb-16">
-            <div className="text-[#38bdf8] text-[13px] font-medium mb-6">Why Delichon</div>
-            <h2 className="font-serif text-[36px] sm:text-[42px] leading-[1.1] text-[#0f172a] tracking-tight">
-              Why Global Brands Choose Delichon for Software Development
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-            {[
-              { title: "Precision Engineering", desc: "We write clean, modular, and extensively documented code focused on structural integrity and standard compliance." },
-              { title: "Scalable Architecture", desc: "We design cloud-ready systems and database structures that gracefully handle user growth and traffic spikes." },
-              { title: "Modern Technology Stack", desc: "We leverage industry-proven languages and frameworks (React, Next.js, Node, Three.js) to build future-proof products." },
-              { title: "User-Centered Design", desc: "Our UI/UX strategies place the target user at the core, minimizing friction to maximize conversions." },
-              { title: "Performance Optimization", desc: "Every asset and script is audited and compiled for lightning-fast speeds and search visibility." },
-              { title: "Long-Term Maintainability", desc: "We engineer codebases designed to be easily tested, extended, and maintained for years to come." }
-            ].map((item, i) => (
-              <article key={i} className="flex flex-col gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#0f172a]/5 flex items-center justify-center text-[#38bdf8] font-bold text-[15px]">
-                  0{i + 1}
+        {/* WHY CHOOSE US SECTION — ORBITAL LAYOUT */}
+        <section className="why-scroll-track relative w-full h-[200vh] pointer-events-auto border-t border-[#0f172a]/5">
+          <div className="why-sticky-container sticky top-0 h-screen w-full flex flex-col justify-center items-center overflow-hidden py-10 px-4 sm:px-6">
+            
+            {/* Header Content */}
+            <div className="absolute top-8 sm:top-12 md:top-16 text-center max-w-[800px] mx-auto z-10 px-4">
+              <div className="text-[#38bdf8] text-[13px] font-medium mb-3 uppercase tracking-wider">Why Delichon</div>
+              <h2 className="font-serif text-[28px] sm:text-[36px] lg:text-[40px] leading-[1.2] text-[#0f172a] tracking-tight">
+                Why Global Brands Choose Delichon for Software Development
+              </h2>
+            </div>
+
+            {/* Orbit System */}
+            <div className="relative w-full flex items-center justify-center mt-20 md:mt-24">
+              <div className="relative w-[680px] h-[680px] flex items-center justify-center scale-[0.43] xs:scale-[0.55] sm:scale-[0.7] md:scale-[0.85] lg:scale-100 origin-center transition-all duration-300">
+                
+                {/* Visual Guides */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <svg className="w-full h-full text-[#0f172a]/5" viewBox="0 0 680 680">
+                    <circle cx="340" cy="340" r="260" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 6" />
+                    <circle cx="340" cy="340" r="170" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+                  </svg>
                 </div>
-                <h3 className="font-sans font-bold text-[18px] text-[#0f172a]">{item.title}</h3>
-                <p className="font-sans text-[13px] leading-relaxed text-[#0f172a]/60">{item.desc}</p>
-              </article>
-            ))}
+
+                {/* Central Glassmorphic Details Card */}
+                <div className="absolute w-[260px] h-[260px] rounded-full bg-white/70 backdrop-blur-xl border border-white flex flex-col justify-center items-center p-8 text-center shadow-[0_15px_40px_rgba(0,0,0,0.03)] z-20 transition-all duration-300">
+                  <div className="text-[#38bdf8] text-[10px] font-bold uppercase tracking-widest mb-3">
+                    {activeDiffIndex !== null ? `0${activeDiffIndex + 1} / 06` : "Core Standards"}
+                  </div>
+                  <h3 className="font-serif text-[18px] lg:text-[20px] leading-snug text-[#0f172a] font-bold mb-3 transition-all duration-300">
+                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].title : "Engineered for Scale"}
+                  </h3>
+                  <p className="font-sans text-[11px] lg:text-[12.5px] leading-relaxed text-[#0f172a]/60 min-h-[66px] transition-all duration-300">
+                    {activeDiffIndex !== null ? differentiators[activeDiffIndex].desc : "Hover over the outer circles to explore our key differentiators and software development standards."}
+                  </p>
+                </div>
+
+                {/* Satellite Nodes */}
+                {differentiators.map((item, i) => {
+                  const finalAngle = -60 + i * 60;
+                  return (
+                    <div
+                      key={i}
+                      className="why-orbit-wrapper absolute w-full h-full top-0 left-0 flex items-center justify-center pointer-events-none"
+                      style={{ transformOrigin: 'center' }}
+                    >
+                      <div
+                        className={`why-satellite pointer-events-auto absolute flex flex-col items-center cursor-pointer transition-all duration-300 group ${
+                          activeDiffIndex !== null && activeDiffIndex !== i ? "opacity-30 scale-[0.9]" : "opacity-100 scale-100"
+                        }`}
+                        style={{
+                          left: '340px',
+                          top: '340px',
+                          width: '130px',
+                          height: '150px',
+                          transform: `translate(-50%, -50%) translate(${260}px, 0px)`,
+                          transformOrigin: 'center center',
+                        }}
+                        onMouseEnter={() => setActiveDiffIndex(i)}
+                        onMouseLeave={() => setActiveDiffIndex(null)}
+                      >
+                        {/* Frame Thumbnail */}
+                        <div className="w-[84px] h-[84px] rounded-full border-[3px] border-white bg-white shadow-[0_8px_25px_rgba(0,0,0,0.05)] overflow-hidden group-hover:border-[#38bdf8] group-hover:shadow-[0_12px_30px_rgba(56,189,248,0.15)] transition-all duration-300">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                        </div>
+                        {/* Upright Label */}
+                        <span className="mt-2 text-center font-sans font-bold text-[11px] text-[#0f172a]/70 group-hover:text-[#38bdf8] transition-colors leading-tight px-1 max-w-[110px] uppercase tracking-wider select-none">
+                          {item.label}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+
+              </div>
+            </div>
+
           </div>
         </section>
 
