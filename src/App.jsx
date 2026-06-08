@@ -175,21 +175,21 @@ export default function App() {
 
       <main className="relative z-10">
         {/* HERO SECTION */}
-        <section className="relative w-full min-h-screen flex items-center px-6 sm:px-10 pt-32 pb-10 max-w-[1400px] mx-auto">
+        <section className="relative w-full min-h-screen flex items-center px-6 sm:px-10 pt-20 lg:pt-32 pb-10 max-w-[1400px] mx-auto">
           <div className="w-full flex flex-col lg:flex-row relative gap-8 lg:gap-0">
             {/* Right column — space for 3D elements (empty because canvas is global now) */}
             {/* On mobile, this spacer is rendered first at the top of the landing page. On desktop (lg), it is placed on the right side. */}
-            <div className="w-full lg:w-[45%] h-[40vh] sm:h-[45vh] lg:h-auto order-first lg:order-last"></div>
+            <div className="w-full lg:w-[45%] h-[30vh] sm:h-[35vh] lg:h-auto order-first lg:order-last"></div>
 
             {/* Left Column - Typography */}
             <div className="w-full lg:w-[55%] flex flex-col justify-center pointer-events-auto order-last lg:order-first">
-              <h1 className="flex flex-col mb-8 select-none">
+              <h1 className="flex flex-col mb-4 lg:mb-8 select-none">
                 <span className="font-serif text-5xl xs:text-6xl sm:text-7xl md:text-8xl lg:text-[95px] leading-[1] text-[#0f172a] tracking-[-0.03em]">Engineered</span>
                 <span className="font-serif text-4xl xs:text-5xl sm:text-5.5xl md:text-6xl lg:text-[75px] leading-[0.8] text-[#0f172a] italic ml-2">with</span>
                 <span className="font-sans font-semibold text-6xl xs:text-7xl sm:text-8xl md:text-9xl lg:text-[115px] leading-[0.9] text-[#0f172a] tracking-[-0.04em] mt-2">Precision</span>
               </h1>
 
-              <p className="font-sans text-[15px] leading-relaxed text-[#0f172a]/70 max-w-[380px] mb-10">
+              <p className="font-sans text-[15px] leading-relaxed text-[#0f172a]/70 max-w-[380px] mb-6 lg:mb-10">
                 We design and build digital systems — <br />
                 websites and applications — tailored precisely <br />
                 to the needs of each client.
@@ -202,7 +202,7 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="mt-12 lg:mt-24 flex items-center space-x-3 text-[13px] text-[#0f172a]/60">
+              <div className="mt-6 lg:mt-20 flex items-center space-x-3 text-[13px] text-[#0f172a]/60">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></div>
                 <span>Scroll to explore</span>
               </div>

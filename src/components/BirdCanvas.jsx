@@ -14,7 +14,7 @@ function DElement({ progress }) {
   const isMobile = viewport.width < 7;
   const targetScale = isMobile ? 1.8 : 4.0;
   const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
-  const targetYOffset = isMobile ? 1.5 : 0.20;
+  const targetYOffset = isMobile ? 2.1 : 0.20;
 
   const clonedScene = useMemo(() => {
     const clone = scene.clone();
@@ -63,7 +63,7 @@ function DElement({ progress }) {
     <primitive
       ref={groupRef}
       object={clonedScene}
-      position={[targetX, isMobile ? 1.5 : 0.5, -1.6]}
+      position={[targetX, isMobile ? 2.1 : 0.5, -1.6]}
       rotation={[0.00, -0.00, 0]}
       scale={targetScale}
     />
@@ -81,7 +81,7 @@ function SymbolBackground({ progress }) {
   const isMobile = viewport.width < 7;
   const targetScale = isMobile ? 1.7 : 3.8;
   const targetX = isMobile ? 0 : Math.min(2.5, viewport.width * 0.22);
-  const targetYOffset = isMobile ? 1.5 : 0.20;
+  const targetYOffset = isMobile ? 2.1 : 0.20;
 
   useFrame(() => {
     if (groupRef.current) {
@@ -103,7 +103,7 @@ function SymbolBackground({ progress }) {
   });
 
   return (
-    <group ref={groupRef} position={[targetX, isMobile ? 1.5 : 0.2, -2.5]} scale={targetScale}>
+    <group ref={groupRef} position={[targetX, isMobile ? 2.1 : 0.2, -2.5]} scale={targetScale}>
       {/* Outer Ring */}
       <mesh>
         <torusGeometry args={[0.85, 0.005, 16, 100]} />
@@ -291,8 +291,8 @@ function BirdModel({ scrollProgress }) {
       const rightX = responsiveLimitX;
       const leftX = -responsiveLimitX;
 
-      const heroPosX = isMobile ? -0.35 : 0.5;
-      const heroPosY = isMobile ? 1.1 : -0.2; // shift up slightly on mobile
+      const heroPosX = isMobile ? -0.55 : 0.5;
+      const heroPosY = isMobile ? 1.7 : -0.2; // shift up slightly on mobile
       const initialScale = isMobile ? 0.60 : 1.2;
       const patrolScale = isMobile ? 0.28 : 0.55;
 
